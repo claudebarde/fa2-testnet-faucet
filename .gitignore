@@ -1,0 +1,6 @@
+node_modules
+client/node_modulesbuild
+client/.cache
+client/dist
+build
+package-lock.json
