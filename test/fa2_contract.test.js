@@ -36,4 +36,57 @@ contract("FA2 Fungible Token Contract", () => {
       storage.assets.total_supply.toNumber()
     );
   });
+
+  it("should prevent Alice from exceeding her balance", async () => {
+    const aliceBalance = await storage.assets.ledger.get(alice.pkh);
+    let err;
+
+    try {
+      const transfer = [
+        {
+          from_: alice.pkh,
+          txs: [{ to_: bob.pkh, token_id: 0, amount: aliceBalance + 1 }]
+        }
+      ];
+      const op = await fa2_instance.methods.transfer(transfer).send();
+      await op.confirmation();
+    } catch (error) {
+      err = error.message;
+    }
+
+    assert.exists(err);
+    assert.equal(err, "FA2_INSUFFICIENT_BALANCE");
+  });
+
+  it("should send 1000 tokens from Alice to Bob", async () => {
+    const tokenAmount = 1000;
+    const aliceBalance = await storage.assets.ledger.get(alice.pkh);
+
+    assert.isAtLeast(aliceBalance.toNumber(), tokenAmount);
+
+    try {
+      const transfer = [
+        {
+          from_: alice.pkh,
+          txs: [{ to_: bob.pkh, token_id: 0, amount: tokenAmount }]
+        }
+      ];
+      const op = await fa2_instance.methods.transfer(transfer).send();
+      await op.confirmation();
+    } catch (error) {
+      console.log("Error:", error);
+    }
+
+    storage = await fa2_instance.storage();
+    const aliceNewBalance = await storage.assets.ledger.get(alice.pkh);
+
+    assert.equal(
+      aliceBalance.toNumber(),
+      aliceNewBalance.toNumber() + tokenAmount
+    );
+
+    const bobBalance = await storage.assets.ledger.get(bob.pkh);
+
+    assert.equal(bobBalance.toNumber(), tokenAmount);
+  });
 });
