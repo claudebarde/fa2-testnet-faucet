@@ -270,20 +270,17 @@ contract("FA2 Fungible Token Contract", () => {
     let err;
 
     try {
-      /*const op = await fa2_instance.methods
-        .update_operators([[[], null]])
-        .toTransferParams();
-      console.log(op);*/
       const op = await fa2_instance.methods
-        .update_operators([[alice.pkh, bob.pkh]])
+        .update_operators([
+          { add_operator: { owner: alice.pkh, operator: bob.pkh } }
+        ])
         .send();
-      console.log(op.opHash);
       await op.confirmation();
     } catch (error) {
-      console.log("Error:", error);
       err = error.message;
     }
 
-    //console.log(err);
+    assert.exists(err);
+    assert.equal(err, "FA2_NOT_OWNER");
   });
 });

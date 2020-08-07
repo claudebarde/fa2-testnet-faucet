@@ -38,11 +38,11 @@ p {
 
   input[type="checkbox"] {
     -webkit-appearance: none;
-    height: 50px;
-    width: 100px;
+    height: 40px;
+    width: 80px;
     box-shadow: $box-shadow-inset;
     border-radius: 40px;
-    border: solid 5px $background-color;
+    border: solid 3px $background-color;
     margin-left: 15px;
     outline: none;
     cursor: pointer;
@@ -54,18 +54,18 @@ p {
     margin: auto;
     top: 0;
     bottom: 0;
+    background: radial-gradient(circle at 5px 5px, #81e6d9, #319795);
     transition: 0.3s;
   }
   input[type="checkbox"]:before {
-    height: 30px;
-    width: 30px;
-    background-color: $background-color;
-    box-shadow: $box-shadow;
+    height: 22px;
+    width: 22px;
     border-radius: 50px;
     left: 30px;
   }
   input[type="checkbox"]:checked:before {
-    left: 70px;
+    left: 60px;
+    background: radial-gradient(circle at 5px 5px, #90cdf4, #3182ce);
   }
 }
 
@@ -136,4 +136,72 @@ button {
 }
 button:active {
   box-shadow: $box-shadow-inset;
+}
+
+.address-container {
+  height: 80px;
+  box-shadow: inset 6px 6px 12px #d2dae3, inset -6px -6px 12px #fcffff;
+  border-radius: 50px;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  padding: 10px 20px;
+
+  .img-container {
+    height: 60px;
+    width: 60px;
+    border-radius: 50px;
+    box-shadow: 3px 3px 10px #d2dae3, -3px -3px 10px #fcffff;
+    border: solid 4px $background-color;
+
+    img {
+      height: 60px;
+      width: 60px;
+    }
+  }
+}
+
+.small-box {
+  border-radius: 40px;
+  background: $background-color;
+  box-shadow: $box-shadow;
+  padding: 10px 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  border: solid 4px $background-color;
+  width: 40%;
+
+  a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border: solid 4px $background-color;
+    border-radius: 50px;
+    box-shadow: $box-shadow;
+    padding: 10px 12px;
+    transition: 0.2s;
+  }
+
+  a.github {
+    color: black;
+  }
+
+  a.contract {
+    color: #38a169;
+    padding: 10px 15px;
+  }
+
+  a.twitter {
+    color: #1fa1f1;
+  }
+
+  a.telegram {
+    color: #27a8e7;
+  }
+
+  a:hover {
+    box-shadow: $box-shadow-inset;
+  }
 }

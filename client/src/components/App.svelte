@@ -1,9 +1,12 @@
 <script>
   import { onMount } from "svelte";
+  import { fly } from "svelte/transition";
   import { Tezos } from "@taquito/taquito";
   import config from "../config";
 
   let contract, storage;
+  let userAddress = "tz1SjrNeUE4zyPGSZpogDZd5tvryixNDsD2v";
+  let userBalance;
 
   let tokenType = false; // false for fa2, true for fa1.2
   let fa2tokenType = "fungible";
@@ -15,6 +18,8 @@
     storage = await contract.storage();
 
     console.log(storage);
+
+    userBalance = await Tezos.tz.getBalance(userAddress);
   });
 </script>
 
@@ -46,6 +51,20 @@
     justify-content: space-around;
     align-items: center;
   }
+
+  .address-container__text {
+    text-align: left;
+    font-size: 0.8rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 20px;
+  }
+
+  .subtitle {
+    opacity: 0.7;
+  }
 </style>
 
 <main>
@@ -57,14 +76,50 @@
           checked={tokenType}
           on:click={() => (tokenType = !tokenType)} />
       </div>
-      {#if tokenType}
-        <p>FA1.2 Token Faucet</p>
-      {:else}
-        <p>FA2 Token Faucet</p>
-      {/if}
+      <div>
+        {#if tokenType}
+          <p
+            in:fly={{ y: 30, duration: 200, delay: 200 }}
+            out:fly={{ y: -30, duration: 200 }}>
+            FA1.2 Token Faucet
+          </p>
+        {:else}
+          <p
+            out:fly={{ y: -30, duration: 200 }}
+            in:fly={{ y: 30, duration: 200, delay: 200 }}>
+            FA2 Token Faucet
+          </p>
+        {/if}
+      </div>
       <p class="checkbox-wallet">
         <input type="checkbox" />
       </p>
+    </div>
+    <br />
+    <div class="address-container">
+      <div class="img-container">
+        <img
+          src={`https://services.tzkt.io/v1/avatars/${userAddress}`}
+          alt="avatar" />
+      </div>
+      <div style="width:100%">
+        <div class="address-container__text">
+          <div>
+            <p>Status: Connected</p>
+            <p class="subtitle">
+              Address: {userAddress.slice(0, 7) + '...' + userAddress.slice(-7)}
+            </p>
+          </div>
+          <div>
+            <p>Balance</p>
+            {#if userBalance}
+              <p class="subtitle">ꜩ {userBalance.toNumber()}</p>
+            {:else}
+              <p class="subtitle">---</p>
+            {/if}
+          </div>
+        </div>
+      </div>
     </div>
     <br />
     <div class="radio-container">
@@ -104,7 +159,25 @@
       {/if}
       <br />
       <br />
-      <button>Confirm</button>
+      <button>
+        Confirm
+        <i class="fas fa-question" />
+      </button>
     </div>
+  </div>
+  <br />
+  <div class="small-box">
+    <a href="https://www.github.com" class="github">
+      <i class="fab fa-github" />
+    </a>
+    <a href="https://www.github.com" class="contract">
+      <i class="far fa-file-code" />
+    </a>
+    <a href="https://www.twitter.com" class="twitter">
+      <i class="fab fa-twitter" />
+    </a>
+    <a href="https://www.telegram.com" class="telegram">
+      <i class="fab fa-telegram-plane" />
+    </a>
   </div>
 </main>
