@@ -12,7 +12,15 @@ const initialStorage = {
   assets: {
     ledger: MichelsonMap.fromLiteral({ [alice.pkh]: totalSupply }),
     operators: new MichelsonMap(),
-    token_metadata: new MichelsonMap(),
+    token_metadata: MichelsonMap.fromLiteral({
+      0: {
+        token_id: 0,
+        symbol: "TEST",
+        name: "TEST",
+        decimals: 0,
+        extras: new MichelsonMap()
+      }
+    }),
     total_supply: totalSupply
   }
 };

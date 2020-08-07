@@ -1,6 +1,96 @@
+$background-color: #e7f0f9;
+$box-shadow: 6px 6px 12px #d2dae3, -6px -6px 12px #fcffff;
+$box-shadow-inset: 6px 6px 12px #d2dae3, -6px -6px 12px #fcffff,
+  inset 6px 6px 12px #d2dae3, inset -6px -6px 12px #fcffff;
+$padding: 30px;
+
 html,
 body {
   height: 100%;
   padding: 0px;
   margin: 0px;
+  background: $background-color;
+  font-size: 20px;
+  font-family: "Verdana", sans-serif;
+  color: #4a5568;
+}
+
+p {
+  margin: 0px;
+  padding: 0px;
+}
+
+.box {
+  border-radius: 40px;
+  background: $background-color;
+  box-shadow: $box-shadow;
+  padding: $padding;
+  display: flex;
+  flex-direction: column;
+  border: solid 4px $background-color;
+}
+
+.title {
+  border-radius: 25px;
+  background: $background-color;
+  box-shadow: $box-shadow;
+  padding: $padding;
+  border: solid 4px $background-color;
+}
+
+input[type="checkbox"] {
+  height: 70px;
+  width: 70px;
+  -webkit-appearance: none;
+  box-shadow: $box-shadow;
+  border-radius: 50%;
+  border: solid 4px $background-color;
+  outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+input[type="checkbox"]:after {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  color: #718096;
+  font-size: 20px;
+}
+input[type="checkbox"]:checked {
+  box-shadow: $box-shadow-inset;
+}
+input[type="checkbox"]:checked:after {
+  color: #48bb78;
+}
+
+.checkbox-wallet {
+  @extend input, [type="checkbox"];
+}
+.checkbox-wallet:after {
+  content: "\f555";
+}
+
+.radio-container {
+  height: 85px;
+  box-shadow: inset 6px 6px 12px #d2dae3, inset -6px -6px 12px #fcffff;
+  border-radius: 25px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  label {
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  input[type="radio"] {
+    display: none;
+  }
+  input[type="radio"]:checked + label {
+    box-shadow: 6px 6px 12px #d2dae3, -6px -6px 12px #fcffff;
+    padding: 10px 20px;
+  }
 }
