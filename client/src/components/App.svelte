@@ -5,7 +5,8 @@
 
   let contract, storage;
 
-  let tokenType = "fungible";
+  let tokenType = false; // false for fa2, true for fa1.2
+  let fa2tokenType = "fungible";
 
   onMount(async () => {
     Tezos.setProvider({ rpc: config.rpc[config.network] });
@@ -35,7 +36,7 @@
   .title {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
   }
 
@@ -50,9 +51,19 @@
 <main>
   <div class="box main-box">
     <div class="title">
-      <p>FA2 Token Faucet</p>
-      <p>
-        <input type="checkbox" class="checkbox-wallet" />
+      <div class="token-type">
+        <input
+          type="checkbox"
+          checked={tokenType}
+          on:click={() => (tokenType = !tokenType)} />
+      </div>
+      {#if tokenType}
+        <p>FA1.2 Token Faucet</p>
+      {:else}
+        <p>FA2 Token Faucet</p>
+      {/if}
+      <p class="checkbox-wallet">
+        <input type="checkbox" />
       </p>
     </div>
     <br />
@@ -62,7 +73,7 @@
         name="token-type"
         id="fungible-token"
         class="select-token-type"
-        on:click={() => (tokenType = 'fungible')}
+        on:click={() => (fa2tokenType = 'fungible')}
         checked />
       <label for="fungible-token" class="radio-label">Fungible Token</label>
       <input
@@ -70,19 +81,22 @@
         name="token-type"
         id="non-fungible-token"
         class="select-token-type"
-        on:click={() => (tokenType = 'nonfungible')} />
+        disabled={tokenType}
+        on:click={() => (fa2tokenType = 'nonfungible')} />
       <label for="non-fungible-token" class="radio-label">
-        Non Fungible Token
+        {#if tokenType}
+          <strike>Non Fungible Token</strike>
+        {:else}Non Fungible Token{/if}
       </label>
     </div>
     <br />
     <div>
-      {#if tokenType === 'fungible'}
+      {#if fa2tokenType === 'fungible'}
         <div class="token-description">
           <p>Fungible tokens:</p>
           <p>100 tokens</p>
         </div>
-      {:else if tokenType === 'nonfungible'}
+      {:else if fa2tokenType === 'nonfungible'}
         <div class="token-description">
           <p>Non fungible tokens:</p>
           <p>1 token</p>
