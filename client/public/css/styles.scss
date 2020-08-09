@@ -123,8 +123,8 @@ p {
 }
 
 button {
-  height: 50px;
-  width: 120px;
+  height: 60px;
+  width: 60px;
   box-shadow: $box-shadow;
   border-radius: 25px;
   border: solid 4px $background-color;
@@ -134,18 +134,40 @@ button {
   font-size: 15px;
   color: #4a5568;
 }
-button:active {
-  box-shadow: $box-shadow-inset;
+button:focus,
+button.active {
+  box-shadow: inset 6px 6px 12px #d2dae3, inset -6px -6px 12px #fcffff;
+}
+button:hover:not(:focus) .icon {
+  animation-name: buttonIcon;
+  animation-duration: 0.3s;
 }
 
-.address-container {
+@keyframes buttonIcon {
+  from {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(20deg);
+  }
+
+  75% {
+    transform: rotate(-20deg);
+  }
+
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@mixin container {
   height: 80px;
   box-shadow: inset 6px 6px 12px #d2dae3, inset -6px -6px 12px #fcffff;
   border-radius: 50px;
   display: flex;
-  justify-content: left;
   align-items: center;
-  padding: 10px 20px;
+  padding: 10px 30px;
 
   .img-container {
     height: 60px;
@@ -159,6 +181,11 @@ button:active {
       width: 60px;
     }
   }
+}
+
+.address-container {
+  @include container;
+  justify-content: left;
 }
 
 .small-box {
@@ -204,4 +231,16 @@ button:active {
   a:hover {
     box-shadow: $box-shadow-inset;
   }
+}
+
+input[type="text"] {
+  margin: 10px 0px;
+  padding: 0px 0px 0px 30px;
+  height: 60px;
+  width: 90%;
+  outline: none;
+  border: none;
+  background: transparent;
+  box-shadow: inset 6px 6px 12px #d2dae3, inset -6px -6px 12px #fcffff;
+  border-radius: 25px;
 }

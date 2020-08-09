@@ -65,6 +65,19 @@
   .subtitle {
     opacity: 0.7;
   }
+
+  .recipient-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .recipient-container__input {
+    text-align: left;
+    font-size: 0.7rem;
+    flex-grow: 2;
+  }
 </style>
 
 <main>
@@ -74,7 +87,12 @@
         <input
           type="checkbox"
           checked={tokenType}
-          on:click={() => (tokenType = !tokenType)} />
+          on:click={() => {
+            tokenType = !tokenType;
+            if (tokenType) {
+              document.getElementById('fungible-token').click();
+            }
+          }} />
       </div>
       <div>
         {#if tokenType}
@@ -158,11 +176,16 @@
         </div>
       {/if}
       <br />
-      <br />
-      <button>
-        Confirm
-        <i class="fas fa-question" />
-      </button>
+      <div style="width:100%">
+        <div class="recipient-container">
+          <div class="recipient-container__input">
+            <input type="text" placeholder="Recipient's address" />
+          </div>
+          <button>
+            <i class="icon far fa-thumbs-up" />
+          </button>
+        </div>
+      </div>
     </div>
   </div>
   <br />
