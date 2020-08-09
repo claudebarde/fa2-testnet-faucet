@@ -10,6 +10,20 @@
 
   let tokenType = false; // false for fa2, true for fa1.2
   let fa2tokenType = "fungible";
+  let fungibleTokens = 50;
+  let nonFungibleTokens = 5;
+
+  const changeAmountTokens = e => {
+    if (tokenType || (!tokenType && fa2tokenType === "fungible")) {
+      if (e.target.value > 0 && e.target.value <= 100) {
+        fungibleTokens = e.target.value;
+      }
+    } else {
+      if (e.target.value > 0 && e.target.value <= 10) {
+        nonFungibleTokens = e.target.value;
+      }
+    }
+  };
 
   onMount(async () => {
     Tezos.setProvider({ rpc: config.rpc[config.network] });
@@ -77,6 +91,20 @@
     text-align: left;
     font-size: 0.7rem;
     flex-grow: 2;
+  }
+
+  .slider-title {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .slider-container {
+    width: 90%;
+    padding-top: 20px;
+    margin: 0 auto;
   }
 </style>
 
@@ -164,27 +192,59 @@
     </div>
     <br />
     <div>
-      {#if fa2tokenType === 'fungible'}
-        <div class="token-description">
-          <p>Fungible tokens:</p>
-          <p>100 tokens</p>
+      <div class="slider-title">
+        <div>Tokens</div>
+        {#if !tokenType}
+          {#if fa2tokenType === 'fungible'}
+            <div>{fungibleTokens}</div>
+          {:else}
+            <div>{nonFungibleTokens}</div>
+          {/if}
+        {:else}
+          <div>{fungibleTokens}</div>
+        {/if}
+      </div>
+      <div class="slider-container">
+        {#if !tokenType}
+          <!-- FA2 token -->
+          {#if fa2tokenType === 'fungible'}
+            <input
+              type="range"
+              min="1"
+              max="100"
+              value={fungibleTokens}
+              on:input={changeAmountTokens}
+              on:change={changeAmountTokens} />
+          {:else}
+            <input
+              type="range"
+              min="1"
+              max="10"
+              value={nonFungibleTokens}
+              on:input={changeAmountTokens}
+              on:change={changeAmountTokens} />
+          {/if}
+        {:else}
+          <!-- FA1.2 token -->
+          <input
+            type="range"
+            min="1"
+            max="100"
+            value={fungibleTokens}
+            on:input={changeAmountTokens}
+            on:change={changeAmountTokens} />
+        {/if}
+      </div>
+    </div>
+    <br />
+    <div style="width:100%">
+      <div class="recipient-container">
+        <div class="recipient-container__input">
+          <input type="text" placeholder="Recipient's address" />
         </div>
-      {:else if fa2tokenType === 'nonfungible'}
-        <div class="token-description">
-          <p>Non fungible tokens:</p>
-          <p>1 token</p>
-        </div>
-      {/if}
-      <br />
-      <div style="width:100%">
-        <div class="recipient-container">
-          <div class="recipient-container__input">
-            <input type="text" placeholder="Recipient's address" />
-          </div>
-          <button>
-            <i class="icon far fa-thumbs-up" />
-          </button>
-        </div>
+        <button>
+          <i class="icon far fa-thumbs-up" />
+        </button>
       </div>
     </div>
   </div>
