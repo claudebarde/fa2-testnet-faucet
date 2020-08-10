@@ -21,11 +21,11 @@ type balance_of_param = {
 
 type balance_of_param_michelson = michelson_pair_right_comb(balance_of_param)
 
-type action =
-  | GetBalanceOf ((address, address))
-  | ReceiveBalanceOf (list (balance_of_response_michelson))
+type entrypoint =
+  | GetBalanceOf ((address, list (address)))
+  | ReceiveBalanceOf (list (balance_of_response_michelson));
 
-let getBalanceOf = (contractAddr: address, userAddress: address, s: storage): (list (operation), storage) => {
+let getBalanceOf = (contractAddr: address, userAddresses: list (address), s: storage): (list (operation), storage) => {
   // tzip12 contract from which the balance should be requested
   let tzip12: contract (balance_of_param_michelson) = 
     switch(Tezos.get_entrypoint_opt("%balance_of", contractAddr): option(contract(balance_of_param_michelson))){
@@ -40,18 +40,27 @@ let getBalanceOf = (contractAddr: address, userAddress: address, s: storage): (l
   };
   let param: balance_of_param_michelson = 
     Layout.convert_to_right_comb({ 
-      requests: [ Layout.convert_to_right_comb({ owner: userAddress, token_id: 0n }: balance_of_request) ], 
+      requests: List.map((userAddress: address): balance_of_request_michelson => {
+        Layout.convert_to_right_comb({ owner: userAddress, token_id: 0n }: balance_of_request);
+      }, userAddresses), 
       callback: callback
     }: balance_of_param) ;
   // sends transaction
   ([Tezos.transaction(param, 0tez, tzip12)], s);
 }
 
-let receiveBalanceOf = (responses: list (balance_of_response_michelson), s: storage): storage => s;
+let receiveBalanceOf = (responses: list (balance_of_response_michelson), s: storage): storage => {
+  let sum = ((i, response): (nat, balance_of_response_michelson)): nat => {
+    let rsp: balance_of_response = Layout.convert_from_right_comb(response);
+    rsp.balance + i ;
+  };
 
-let main = ((p, s): (action, storage)) => {
+  List.fold (sum, responses, 0n);
+};
+
+let main = ((p, s): (entrypoint, storage)) => {
   switch (p) {
     | GetBalanceOf (params) => getBalanceOf(params[0], params[1], s)
-    | ReceiveBalanceOf (n) => ([]: list (operation), receiveBalanceOf(n, s))
+    | ReceiveBalanceOf (l) => ([]: list (operation), receiveBalanceOf(l, s))
     };
 };
