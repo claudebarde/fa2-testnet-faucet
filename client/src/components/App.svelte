@@ -12,14 +12,17 @@
   let fa2tokenType = "fungible";
   let fungibleTokens = 50;
   let nonFungibleTokens = 5;
+  let increaseTokens = undefined;
 
   const changeAmountTokens = e => {
     if (tokenType || (!tokenType && fa2tokenType === "fungible")) {
       if (e.target.value > 0 && e.target.value <= 100) {
+        increaseTokens = e.target.value > fungibleTokens;
         fungibleTokens = e.target.value;
       }
     } else {
       if (e.target.value > 0 && e.target.value <= 10) {
+        increaseTokens = e.target.value > nonFungibleTokens;
         nonFungibleTokens = e.target.value;
       }
     }
@@ -46,9 +49,11 @@
     align-items: center;
   }
 
-  .main-box {
+  .main-box,
+  .second-box {
     margin: 0 auto;
-    width: 40%;
+    min-width: 600px;
+    max-width: 400px;
     text-align: center;
   }
 
@@ -56,13 +61,6 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
-  }
-
-  .token-description {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
     align-items: center;
   }
 
@@ -105,6 +103,13 @@
     width: 90%;
     padding-top: 20px;
     margin: 0 auto;
+  }
+
+  #tokenSlider::-webkit-slider-thumb::before {
+    content: "+";
+    width: 100%;
+    color: red;
+    z-index: 100;
   }
 </style>
 
@@ -214,7 +219,8 @@
               max="100"
               value={fungibleTokens}
               on:input={changeAmountTokens}
-              on:change={changeAmountTokens} />
+              on:change={changeAmountTokens}
+              id="tokenSlider" />
           {:else}
             <input
               type="range"
@@ -222,7 +228,8 @@
               max="10"
               value={nonFungibleTokens}
               on:input={changeAmountTokens}
-              on:change={changeAmountTokens} />
+              on:change={changeAmountTokens}
+              id="tokenSlider" />
           {/if}
         {:else}
           <!-- FA1.2 token -->
@@ -232,7 +239,8 @@
             max="100"
             value={fungibleTokens}
             on:input={changeAmountTokens}
-            on:change={changeAmountTokens} />
+            on:change={changeAmountTokens}
+            id="tokenSlider" />
         {/if}
       </div>
     </div>
@@ -249,7 +257,7 @@
     </div>
   </div>
   <br />
-  <div class="small-box">
+  <div class="small-box second-box">
     <a href="https://www.github.com" class="github">
       <i class="fab fa-github" />
     </a>

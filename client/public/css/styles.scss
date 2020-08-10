@@ -253,10 +253,6 @@ input[type="range"] {
   outline: none;
   border-radius: 25px;
 
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-  }
-
   &:focus {
     outline: none;
     background: #e0eafc; /* fallback for old browsers */

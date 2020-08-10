@@ -1,40 +1,26 @@
-const FA2 = artifacts.require("fa2_single_asset");
-const { Tezos, MichelsonMap } = require("@taquito/taquito");
-const { InMemorySigner } = require("@taquito/signer");
+const { Tezos } = require("@taquito/taquito");
 const { alice, bob } = require("../scripts/sandbox/accounts");
+const setup = require("./setup");
 
-const signerFactory = async pk => {
-  await Tezos.setProvider({ signer: new InMemorySigner(pk) });
-  return Tezos;
-};
-
-contract("FA2 Fungible Token Contract", () => {
+contract("FA2 Fungible Token Contract - Transfers", () => {
   let storage;
   let fa2_address;
   let fa2_instance;
+  let signerFactory;
 
   before(async () => {
-    fa2_instance = await FA2.deployed();
-    // this code bypasses Truffle config to be able to have different signers
-    // until I find how to do it directly with Truffle
-    await Tezos.setProvider({ rpc: "http://localhost:8732" });
-    await signerFactory(alice.sk);
-    /**
-     * Display the current contract address for debugging purposes
-     */
-    console.log("Contract deployed at:", fa2_instance.address);
-    fa2_address = fa2_instance.address;
-    fa2_instance = await Tezos.contract.at(fa2_instance.address);
-    storage = await fa2_instance.storage();
+    const config = await setup();
+    storage = config.storage;
+    fa2_address = config.fa2_address;
+    fa2_instance = config.fa2_instance;
+    signerFactory = config.signerFactory;
   });
 
-  /*it("checks if Alice has an account", async () => {
+  it("checks if Alice has an account", async () => {
     const aliceBalance = await storage.assets.ledger.get(alice.pkh);
 
-    assert.equal(
-      aliceBalance.toNumber(),
-      storage.assets.total_supply.toNumber()
-    );
+    assert.isDefined(aliceBalance);
+    assert.isAbove(aliceBalance.toNumber(), 0);
   });
 
   it("should prevent Alice from exceeding her balance", async () => {
@@ -61,6 +47,12 @@ contract("FA2 Fungible Token Contract", () => {
   it("should send 1000 tokens from Alice to Bob", async () => {
     const tokenAmount = 1000;
     const aliceBalance = await storage.assets.ledger.get(alice.pkh);
+    let bobBalance = await storage.assets.ledger.get(bob.pkh);
+    if (bobBalance) {
+      bobBalance = bobBalance.toNumber();
+    } else {
+      bobBalance = 0;
+    }
 
     assert.isAtLeast(aliceBalance.toNumber(), tokenAmount);
 
@@ -85,9 +77,9 @@ contract("FA2 Fungible Token Contract", () => {
       aliceNewBalance.toNumber() + tokenAmount
     );
 
-    const bobBalance = await storage.assets.ledger.get(bob.pkh);
+    const bobNewBalance = await storage.assets.ledger.get(bob.pkh);
 
-    assert.equal(bobBalance.toNumber(), tokenAmount);
+    assert.equal(bobNewBalance.toNumber(), bobBalance + tokenAmount);
   });
 
   it("should accept a batch of transactions", async () => {
@@ -229,7 +221,7 @@ contract("FA2 Fungible Token Contract", () => {
       const transfer = [
         {
           from_: alice.pkh,
-          txs: [{ to_: bob.pkh, token_id: 2, amount: 100 }]
+          txs: [{ to_: bob.pkh, token_id: 0, amount: 100 }]
         }
       ];
       const op = await fa2_instance.methods.transfer(transfer).send();
@@ -240,47 +232,5 @@ contract("FA2 Fungible Token Contract", () => {
 
     assert.exists(err);
     assert.equal(err, "FA2_NOT_OPERATOR");
-  });
-
-  it("should set Bob as an operator for Alice", async () => {
-    let err = false;
-    // checks that Bob is not already set as an operator
-    const pair = { 0: alice.pkh, 1: bob.pkh };
-
-    try {
-      const isBobOperator = await storage.assets.operators.get(pair);
-      if(isBobOperator){
-        throw new Error("Bob is already operator!")
-      } else {
-        const op = await fa2_instance.methods.add_operator(alice.pkh, bob.pkh).send();
-      }
-    } catch (error) {
-      err = true
-      console.log("Error:", error);
-    }
-
-    assert.isFalse(err);
-
-
-  });*/
-
-  it("should prevent Bob from setting himself as an operator for Alice", async () => {
-    await signerFactory(bob.sk);
-
-    let err;
-
-    try {
-      const op = await fa2_instance.methods
-        .update_operators([
-          { add_operator: { owner: alice.pkh, operator: bob.pkh } }
-        ])
-        .send();
-      await op.confirmation();
-    } catch (error) {
-      err = error.message;
-    }
-
-    assert.exists(err);
-    assert.equal(err, "FA2_NOT_OWNER");
   });
 });
