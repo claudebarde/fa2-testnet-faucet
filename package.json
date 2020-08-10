@@ -1,7 +1,7 @@
 {
-  "name": "tezos-bare-box",
+  "name": "tezos-tokens-test-suite",
   "version": "2.0.0",
-  "description": "Tezos Bare Box =================",
+  "description": "Test Suite for Tezos Tokens",
   "dependencies": {
     "@taquito/taquito": "^6.3.5-beta.0"
   },
@@ -9,7 +9,8 @@
     "ganache-cli": "^6.10.0-tezos.1"
   },
   "scripts": {
-    "start-sandbox": "ganache-cli --flavor tezos --seed alice"
+    "start-sandbox": "ganache-cli --flavor tezos --seed alice",
+    "test": "docker pull ligolang/ligo:next && truffle test"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,7 @@
     "blockchain",
     "truffle"
   ],
-  "author": "Cruz Molina <cruz@trufflesuite.com>",
+  "author": "Claude Barde <@claudebarde>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/truffle-box/tezos-bare-box/issues"
