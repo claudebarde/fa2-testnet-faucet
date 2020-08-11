@@ -1,4 +1,15 @@
-type storage = nat;
+/*
+* STORAGE
+*/
+
+type storage = {
+  balance:                nat,
+  token_metadata_address: address
+};
+
+/*
+* BALANCE_OF ENTRYPOINT
+*/
 
 type balance_of_request = {
   owner:    address,
@@ -19,11 +30,17 @@ type balance_of_param = {
   callback: contract (list (balance_of_response_michelson))
 }
 
-type balance_of_param_michelson = michelson_pair_right_comb(balance_of_param)
+type balance_of_param_michelson = michelson_pair_right_comb(balance_of_param);
+
+/*
+* ENTRYPOINTS
+*/
 
 type entrypoint =
   | GetBalanceOf ((address, list (address)))
-  | ReceiveBalanceOf (list (balance_of_response_michelson));
+  | ReceiveBalanceOf (list (balance_of_response_michelson))
+  | GetTokenMetadata (address)
+  | ReceiveTokenMetadataAddress (address);
 
 let getBalanceOf = (contractAddr: address, userAddresses: list (address), s: storage): (list (operation), storage) => {
   // tzip12 contract from which the balance should be requested
@@ -55,12 +72,35 @@ let receiveBalanceOf = (responses: list (balance_of_response_michelson), s: stor
     rsp.balance + i ;
   };
 
-  List.fold (sum, responses, 0n);
+  {...s, balance: List.fold (sum, responses, 0n)};
 };
+
+let getTokenMetadata = (contractAddr: address, s: storage): (list (operation), storage) => {
+  // tzip12 contract from which the token metadata should be requested
+  let tzip12: contract (contract (address)) = 
+    switch(Tezos.get_entrypoint_opt("%token_metadata_registry", contractAddr): option(contract(contract (address)))){
+    | None => failwith ("FA2NotFound"): contract (contract (address))
+    | Some (contr) => contr
+  };
+  // casts contract address to contract type
+  let param: contract (address) = 
+    switch (Tezos.get_entrypoint_opt("%receiveTokenMetadataAddress", Tezos.self_address): option (contract (address))) {
+      | None => failwith ("ContractNotFound"): contract (address)
+      | Some (contr) => contr
+    } ;
+  // sends transaction
+  ([Tezos.transaction(param, 0tez, tzip12)], s);
+} ;
+
+let receiveTokenMetadataAddress = (addr: address, s: storage): storage => {
+  {...s, token_metadata_address: addr} ;
+}
 
 let main = ((p, s): (entrypoint, storage)) => {
   switch (p) {
     | GetBalanceOf (params) => getBalanceOf(params[0], params[1], s)
     | ReceiveBalanceOf (l) => ([]: list (operation), receiveBalanceOf(l, s))
+    | GetTokenMetadata (addr) => getTokenMetadata(addr, s)
+    | ReceiveTokenMetadataAddress (addr) => ([]: list (operation), receiveTokenMetadataAddress(addr, s))
     };
 };

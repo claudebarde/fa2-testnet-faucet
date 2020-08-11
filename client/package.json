@@ -16,6 +16,8 @@
     "svelte": "^3.12.1"
   },
   "dependencies": {
-    "@taquito/taquito": "^6.3.5-beta.0"
+    "@taquito/taquito": "^6.3.5-beta.0",
+    "@taquito/tezbridge-wallet": "^6.3.5-beta.0",
+    "@thanos-wallet/dapp": "^0.5.0"
   }
 }

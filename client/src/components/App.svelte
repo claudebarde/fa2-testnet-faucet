@@ -3,16 +3,18 @@
   import { fly } from "svelte/transition";
   import { Tezos } from "@taquito/taquito";
   import config from "../config";
+  import ConnectWallet from "./ConnectWallet.svelte";
+  import UserAddress from "./UserAddress.svelte";
+  import store from "../store";
 
   let contract, storage;
-  let userAddress = "tz1SjrNeUE4zyPGSZpogDZd5tvryixNDsD2v";
-  let userBalance;
 
   let tokenType = false; // false for fa2, true for fa1.2
   let fa2tokenType = "fungible";
   let fungibleTokens = 50;
   let nonFungibleTokens = 5;
   let increaseTokens = undefined;
+  let contractType = "fa2Address";
 
   const changeAmountTokens = e => {
     if (tokenType || (!tokenType && fa2tokenType === "fungible")) {
@@ -30,13 +32,12 @@
 
   onMount(async () => {
     Tezos.setProvider({ rpc: config.rpc[config.network] });
+    store.updateTezos(Tezos);
 
-    contract = await Tezos.wallet.at(config.contractAddress[config.network]);
+    contract = await Tezos.wallet.at(config[contractType][config.network]);
     storage = await contract.storage();
 
     console.log(storage);
-
-    userBalance = await Tezos.tz.getBalance(userAddress);
   });
 </script>
 
@@ -62,20 +63,6 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-  }
-
-  .address-container__text {
-    text-align: left;
-    font-size: 0.8rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 20px;
-  }
-
-  .subtitle {
-    opacity: 0.7;
   }
 
   .recipient-container {
@@ -142,36 +129,12 @@
           </p>
         {/if}
       </div>
-      <p class="checkbox-wallet">
-        <input type="checkbox" />
-      </p>
+      <div>
+        <ConnectWallet />
+      </div>
     </div>
     <br />
-    <div class="address-container">
-      <div class="img-container">
-        <img
-          src={`https://services.tzkt.io/v1/avatars/${userAddress}`}
-          alt="avatar" />
-      </div>
-      <div style="width:100%">
-        <div class="address-container__text">
-          <div>
-            <p>Status: Connected</p>
-            <p class="subtitle">
-              Address: {userAddress.slice(0, 7) + '...' + userAddress.slice(-7)}
-            </p>
-          </div>
-          <div>
-            <p>Balance</p>
-            {#if userBalance}
-              <p class="subtitle">ꜩ {userBalance.toNumber()}</p>
-            {:else}
-              <p class="subtitle">---</p>
-            {/if}
-          </div>
-        </div>
-      </div>
-    </div>
+    <UserAddress />
     <br />
     <div class="radio-container">
       <input
@@ -258,16 +221,32 @@
   </div>
   <br />
   <div class="small-box second-box">
-    <a href="https://www.github.com" class="github">
+    <a
+      href="https://www.github.com"
+      class="github"
+      target="_blank"
+      rel="noopener noreferrer">
       <i class="fab fa-github" />
     </a>
-    <a href="https://www.github.com" class="contract">
+    <a
+      href="https://www.github.com"
+      class="contract"
+      target="_blank"
+      rel="noopener noreferrer">
       <i class="far fa-file-code" />
     </a>
-    <a href="https://www.twitter.com" class="twitter">
+    <a
+      href="https://www.twitter.com"
+      class="twitter"
+      target="_blank"
+      rel="noopener noreferrer">
       <i class="fab fa-twitter" />
     </a>
-    <a href="https://www.telegram.com" class="telegram">
+    <a
+      href="https://www.telegram.org"
+      class="telegram"
+      target="_blank"
+      rel="noopener noreferrer">
       <i class="fab fa-telegram-plane" />
     </a>
   </div>

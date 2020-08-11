@@ -93,8 +93,11 @@ p {
   input[type="checkbox"]:checked {
     box-shadow: $box-shadow-inset;
   }
-  input[type="checkbox"]:checked:after {
+  input[type="checkbox"].success:checked:after {
     color: #48bb78;
+  }
+  input[type="checkbox"].warning:checked:after {
+    color: #ed8936;
   }
 }
 

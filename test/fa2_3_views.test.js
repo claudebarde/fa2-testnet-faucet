@@ -21,7 +21,7 @@ contract("FA2 Fungible Token Contract - View entrypoints", () => {
   it("should verify the initial balance is 0", async () => {
     storage = await fa2_testContract_instance.storage();
 
-    assert.equal(storage, 0);
+    assert.equal(storage.balance, 0);
   });
 
   it("should return Alice's balance", async () => {
@@ -36,7 +36,7 @@ contract("FA2 Fungible Token Contract - View entrypoints", () => {
 
     storage = await fa2_testContract_instance.storage();
 
-    assert.isAbove(storage.toNumber(), 0);
+    assert.isAbove(storage.balance.toNumber(), 0);
   });
 
   it("should return Alice's and Bob's balances", async () => {
@@ -77,6 +77,21 @@ contract("FA2 Fungible Token Contract - View entrypoints", () => {
     // fetches new storage
     storage = await fa2_testContract_instance.storage();
 
-    assert.equal(storage.toNumber(), aliceBalance + bobBalance);
+    assert.equal(storage.balance.toNumber(), aliceBalance + bobBalance);
+  });
+
+  it("should query token metadata address", async () => {
+    try {
+      const op = await fa2_testContract_instance.methods
+        .getTokenMetadata(fa2_address)
+        .send();
+      await op.confirmation();
+
+      storage = await fa2_testContract_instance.storage();
+    } catch (error) {
+      console.log(error);
+    }
+
+    assert.equal(storage.token_metadata_address, fa2_address);
   });
 });
