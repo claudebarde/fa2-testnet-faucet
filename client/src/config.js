@@ -1,5 +1,6 @@
 export default {
-  network: process.env.NODE_ENV === "development" ? "sandbox" : "carthagenet",
+  //network: process.env.NODE_ENV === "development" ? "sandbox" : "carthagenet",
+  network: "carthagenet",
   rpc: {
     sandbox: "http://localhost:8732",
     carthagenet: "https://carthagenet.smartpy.io"

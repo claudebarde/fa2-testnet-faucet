@@ -163,7 +163,8 @@
       </div>
     </div>
     <br />
-    <UserAddress />
+    <UserAddress
+      on:user-is-recipient={event => (recipientAddress = event.detail)} />
     <br />
     <div class="radio-container">
       <input
