@@ -246,6 +246,8 @@ input[type="text"] {
   background: transparent;
   box-shadow: inset 6px 6px 12px #d2dae3, inset -6px -6px 12px #fcffff;
   border-radius: 25px;
+  opacity: 0.6;
+  font-size: 0.8rem;
 }
 
 input[type="range"] {

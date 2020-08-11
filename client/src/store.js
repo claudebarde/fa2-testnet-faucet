@@ -3,7 +3,10 @@ import { writable } from "svelte/store";
 const initialState = {
   userAddress: undefined,
   userBalance: 0,
-  Tezos: undefined
+  Tezos: undefined,
+  fa12_instance: undefined,
+  tokenType: true, // false for fa2, true for fa1.2
+  contractType: "fa12Address"
 };
 
 const store = writable(initialState);
@@ -18,6 +21,15 @@ const state = {
   },
   updateTezos: Tezos => {
     store.update(store => ({ ...store, Tezos }));
+  },
+  updateTokenType: tokenType => {
+    store.update(store => ({ ...store, tokenType }));
+  },
+  updateFA12_instance: instance => {
+    store.update(store => ({ ...store, fa12_instance: instance }));
+  },
+  updateContractType: contractType => {
+    store.update(store => ({ ...store, contractType }));
   }
 };
 

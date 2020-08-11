@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { fly } from "svelte/transition";
   import { Tezos } from "@taquito/taquito";
+  import { validateAddress } from "@taquito/utils";
   import config from "../config";
   import ConnectWallet from "./ConnectWallet.svelte";
   import UserAddress from "./UserAddress.svelte";
@@ -9,15 +10,17 @@
 
   let contract, storage;
 
-  let tokenType = false; // false for fa2, true for fa1.2
   let fa2tokenType = "fungible";
   let fungibleTokens = 50;
   let nonFungibleTokens = 5;
   let increaseTokens = undefined;
-  let contractType = "fa2Address";
+  let recipientAddress = "";
 
   const changeAmountTokens = e => {
-    if (tokenType || (!tokenType && fa2tokenType === "fungible")) {
+    if (
+      $store.tokenType ||
+      (!$store.tokenType && fa2tokenType === "fungible")
+    ) {
       if (e.target.value > 0 && e.target.value <= 100) {
         increaseTokens = e.target.value > fungibleTokens;
         fungibleTokens = e.target.value;
@@ -30,14 +33,40 @@
     }
   };
 
+  const isAddressValid = address => {
+    if (validateAddress(address) === 3) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const transferTokens = async () => {
+    if (isAddressValid(recipientAddress)) {
+      // address is valid
+      if ($store.tokenType) {
+        // FA1.2
+        // sends transaction to contract
+        try {
+          const op = await $store.fa12_instance.methods
+            .mint(fungibleTokens)
+            .send();
+          await op.confirmation();
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        // FA2
+      }
+    } else {
+      // address is not valid
+    }
+  };
+
   onMount(async () => {
     Tezos.setProvider({ rpc: config.rpc[config.network] });
     store.updateTezos(Tezos);
-
-    contract = await Tezos.wallet.at(config[contractType][config.network]);
-    storage = await contract.storage();
-
-    console.log(storage);
+    console.log(process.env.NODE_ENV);
   });
 </script>
 
@@ -106,16 +135,16 @@
       <div class="token-type">
         <input
           type="checkbox"
-          checked={tokenType}
+          checked={$store.tokenType}
           on:click={() => {
-            tokenType = !tokenType;
-            if (tokenType) {
+            store.updateTokenType(!$store.tokenType);
+            if ($store.tokenType) {
               document.getElementById('fungible-token').click();
             }
           }} />
       </div>
       <div>
-        {#if tokenType}
+        {#if $store.tokenType}
           <p
             in:fly={{ y: 30, duration: 200, delay: 200 }}
             out:fly={{ y: -30, duration: 200 }}>
@@ -150,10 +179,10 @@
         name="token-type"
         id="non-fungible-token"
         class="select-token-type"
-        disabled={tokenType}
+        disabled={$store.tokenType}
         on:click={() => (fa2tokenType = 'nonfungible')} />
       <label for="non-fungible-token" class="radio-label">
-        {#if tokenType}
+        {#if $store.tokenType}
           <strike>Non Fungible Token</strike>
         {:else}Non Fungible Token{/if}
       </label>
@@ -162,7 +191,7 @@
     <div>
       <div class="slider-title">
         <div>Tokens</div>
-        {#if !tokenType}
+        {#if !$store.tokenType}
           {#if fa2tokenType === 'fungible'}
             <div>{fungibleTokens}</div>
           {:else}
@@ -173,7 +202,7 @@
         {/if}
       </div>
       <div class="slider-container">
-        {#if !tokenType}
+        {#if !$store.tokenType}
           <!-- FA2 token -->
           {#if fa2tokenType === 'fungible'}
             <input
@@ -211,9 +240,12 @@
     <div style="width:100%">
       <div class="recipient-container">
         <div class="recipient-container__input">
-          <input type="text" placeholder="Recipient's address" />
+          <input
+            type="text"
+            placeholder="Recipient's address"
+            bind:value={recipientAddress} />
         </div>
-        <button>
+        <button on:click={transferTokens}>
           <i class="icon far fa-thumbs-up" />
         </button>
       </div>

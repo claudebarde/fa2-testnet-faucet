@@ -1,0 +1,238 @@
+parameter
+  (or (or (pair :transfer (address %from) (pair (address %to) (nat %value)))
+          (or (pair %approve (address :spender) (nat :value))
+              (pair %mint (address :owner) (nat :balance))))
+      (or (pair %getAllowance (pair (address :owner) (address :spender)) (contract nat))
+          (or (pair %getBalance (address :owner) (contract nat))
+              (pair %getTotalSupply unit (contract nat))))) ;
+storage
+  (pair (big_map %ledger
+           (address :owner)
+           (pair (nat :balance) (map :allowances (address :spender) (nat :value))))
+        (nat %totalSupply)) ;
+code { UNPAIR ;
+       IF_LEFT
+         { IF_LEFT
+             { UNPAPAIR ;
+               DIP 3 { UNPAIR } ;
+               DIG 3 ;
+               DIP { DUP } ;
+               DUP ;
+               DIG 3 ;
+               MEM ;
+               IF { DIP { DUP } ;
+                    DUP ;
+                    DIG 3 ;
+                    GET ;
+                    IF_NONE
+                      { PUSH string "NoValue" ; FAILWITH }
+                      { UNPAIR ;
+                        DIP 5 { DUP } ;
+                        DUP ;
+                        DIG 6 ;
+                        IFCMPGT
+                          { PUSH string "NotEnoughBalance" ; FAILWITH }
+                          { DIP 3 { DUP } ;
+                            DIG 3 ;
+                            SENDER ;
+                            IFCMPEQ
+                              {}
+                              { DIP { DUP } ;
+                                SWAP ;
+                                SENDER ;
+                                GET ;
+                                IF_NONE
+                                  { PUSH string "NotEnoughAllowance" ; FAILWITH }
+                                  { DIP 6 { DUP } ;
+                                    DIG 6 ;
+                                    IFCMPGT { PUSH string "NotEnoughAllowance" ; FAILWITH } {} } } ;
+                            DIP 5 { DUP } ;
+                            DIG 5 ;
+                            SWAP ;
+                            SUB ;
+                            ABS ;
+                            PAIR ;
+                            DIG 2 ;
+                            DUP ;
+                            DUG 5 ;
+                            DIP { SOME } ;
+                            UPDATE ;
+                            DIP 1 { DUP } ;
+                            DIG 1 ;
+                            DIP { DUP } ;
+                            DIP 4 { DUP } ;
+                            MEM ;
+                            IF { DIP { DUP } ;
+                                 SWAP ;
+                                 DIP { DUP } ;
+                                 GET ;
+                                 IF_NONE
+                                   { PUSH string "NOVALUE" ; FAILWITH }
+                                   { UNPAIR ; DIG 4 ; ADD ; PAIR ; SOME ; DIG 2 ; UPDATE } }
+                               { DUG 2 ;
+                                 SWAP ;
+                                 PUSH (map address nat) {} ;
+                                 SWAP ;
+                                 PAIR ;
+                                 SOME ;
+                                 SWAP ;
+                                 UPDATE } ;
+                            DIP { SWAP } ;
+                            SWAP ;
+                            DUP ;
+                            SENDER ;
+                            IFCMPEQ
+                              { SWAP ; DIP { DROP ; DROP } }
+                              { SWAP ;
+                                DUP ;
+                                DIP 2 { DUP } ;
+                                DIG 2 ;
+                                GET ;
+                                IF_NONE
+                                  { PUSH string "NoValue" ; FAILWITH }
+                                  { UNPAIR ;
+                                    DUG 4 ;
+                                    DUP ;
+                                    DIP { SWAP } ;
+                                    SENDER ;
+                                    GET ;
+                                    IF_NONE
+                                      { PUSH string "NoValue" ; FAILWITH }
+                                      { DIG 4 ;
+                                        SWAP ;
+                                        SUB ;
+                                        ABS ;
+                                        DIP { SWAP } ;
+                                        SENDER ;
+                                        DIP { SOME } ;
+                                        UPDATE ;
+                                        DIG 3 ;
+                                        PAIR ;
+                                        DIG 2 ;
+                                        DIP { SOME } ;
+                                        UPDATE } } } ;
+                            PAIR } } }
+                  { PUSH string "NoAccount" ; FAILWITH } }
+             { IF_LEFT
+                 { SWAP ;
+                   UNPAIR ;
+                   DIP { SWAP } ;
+                   DIP { DUP } ;
+                   SWAP ;
+                   CAR ;
+                   SENDER ;
+                   IFCMPEQ { PUSH string "IdenticalSpenderSender" ; FAILWITH } {} ;
+                   DUP ;
+                   SENDER ;
+                   GET ;
+                   IF_NONE
+                     { PUSH string "NoAccount" ; FAILWITH }
+                     { UNPAIR ;
+                       DUG 3 ;
+                       DIG 2 ;
+                       UNPAIR ;
+                       DIP { SWAP ; DUP } ;
+                       DUP ;
+                       DIP { SWAP } ;
+                       GET ;
+                       IF_NONE
+                         { DIP { SWAP } ; DIP { SOME } ; UPDATE ; DIG 2 ; PAIR ; SOME }
+                         { INT ;
+                           EQ ;
+                           IF { DIP { SWAP ; SOME } ; UPDATE ; DIG 2 ; PAIR ; SOME }
+                              { DIG 2 ;
+                                INT ;
+                                EQ ;
+                                IF { PUSH nat 0 ; SOME ; SWAP ; UPDATE ; DIG 2 ; PAIR ; SOME }
+                                   { PUSH string "UnsafeAllowanceChange" ; FAILWITH } } } ;
+                       SENDER ;
+                       UPDATE } ;
+                   PAIR }
+                 { DIP { UNPAIR ; DUP } ;
+                   DUP ;
+                   DIP { SWAP } ;
+                   CAR ;
+                   MEM ;
+                   IF { DIP { DUP } ;
+                        DUP ;
+                        DIP { SWAP } ;
+                        CAR ;
+                        GET ;
+                        IF_NONE
+                          { PUSH string "UnexpectedValue" ; FAILWITH }
+                          { DIP { DUP } ;
+                            SWAP ;
+                            CDR ;
+                            PUSH nat 100 ;
+                            IFCMPLT
+                              { PUSH string "INVALIDAMOUNT" ; FAILWITH }
+                              { DIP { DUP ; CDR } ;
+                                UNPAIR ;
+                                DIG 2 ;
+                                ADD ;
+                                PAIR ;
+                                SOME ;
+                                DIP { UNPAIR } ;
+                                SWAP ;
+                                DIG 2 ;
+                                DUG 3 ;
+                                UPDATE } } }
+                      { DUP ;
+                        CDR ;
+                        PUSH nat 100 ;
+                        IFCMPLT
+                          { PUSH string "INVALIDAMOUNT" ; FAILWITH }
+                          { EMPTY_MAP address nat ;
+                            SWAP ;
+                            UNPAIR ;
+                            SWAP ;
+                            DUP ;
+                            DUG 4 ;
+                            SWAP ;
+                            DIP { PAIR ; SOME } ;
+                            UPDATE } } ;
+                   DIP { ADD } ;
+                   PAIR } } ;
+           NIL operation ;
+           PAIR }
+         { IF_LEFT
+             { DIP { DUP ; CAR } ;
+               UNPPAIIR ;
+               DIP { DIG 2 } ;
+               GET ;
+               IF_NONE
+                 { PUSH string "NoAccount" ; FAILWITH }
+                 { CDR ;
+                   SWAP ;
+                   GET ;
+                   IF_NONE
+                     { PUSH string "NoAllowance" ; FAILWITH }
+                     { DIP { PUSH mutez 0 } ;
+                       TRANSFER_TOKENS ;
+                       NIL operation ;
+                       SWAP ;
+                       CONS ;
+                       PAIR } } }
+             { IF_LEFT
+                 { DIP { DUP ; CAR } ;
+                   UNPAIR ;
+                   DIP { SWAP } ;
+                   GET ;
+                   IF_NONE
+                     { PUSH string "NoAllowance" ; FAILWITH }
+                     { CAR ;
+                       DIP { PUSH mutez 0 } ;
+                       TRANSFER_TOKENS ;
+                       NIL operation ;
+                       SWAP ;
+                       CONS ;
+                       PAIR } }
+                 { CDR ;
+                   DIP { DUP ; CDR } ;
+                   SWAP ;
+                   DIP { PUSH mutez 0 } ;
+                   TRANSFER_TOKENS ;
+                   NIL operation ;
+                   SWAP ;
+                   CONS ;
+                   PAIR } } } }

@@ -4,3 +4,4 @@ client/.cache
 client/dist
 build
 package-lock.json
+faucet.js
