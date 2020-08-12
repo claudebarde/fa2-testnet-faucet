@@ -6,11 +6,11 @@
   import ConnectWallet from "./ConnectWallet.svelte";
   import UserAddress from "./UserAddress.svelte";
   import TransferTokens from "./TransferTokens.svelte";
+  import TokenType from "./TokenType.svelte";
   import store from "../store";
 
   let contract, storage;
 
-  let fa2tokenType = "fungible";
   let fungibleTokens = 50;
   let nonFungibleTokens = 5;
   let increaseTokens = undefined;
@@ -19,7 +19,7 @@
   const changeAmountTokens = e => {
     if (
       $store.tokenType ||
-      (!$store.tokenType && fa2tokenType === "fungible")
+      (!$store.tokenType && $store.contractType === "fa2_ft")
     ) {
       if (e.target.value > 0 && e.target.value <= 100) {
         increaseTokens = e.target.value > fungibleTokens;
@@ -45,6 +45,8 @@
       store.updateFA12_instance(contract);
     } else {
       // creates instance for FA2 contract
+      const contract = await Tezos.wallet.at(config.fa2_ft[config.network]);
+      store.updateFA2_instance(contract);
     }
   });
 </script>
@@ -98,17 +100,7 @@
 <main>
   <div class="box main-box">
     <div class="title">
-      <div class="token-type">
-        <input
-          type="checkbox"
-          checked={$store.tokenType}
-          on:click={() => {
-            store.updateTokenType(!$store.tokenType);
-            if ($store.tokenType) {
-              document.getElementById('fungible-token').click();
-            }
-          }} />
-      </div>
+      <TokenType />
       <div>
         {#if $store.tokenType}
           <p
@@ -137,7 +129,13 @@
         name="token-type"
         id="fungible-token"
         class="select-token-type"
-        on:click={() => (fa2tokenType = 'fungible')}
+        on:click={() => {
+          if ($store.tokenType) {
+            store.updateContractType('fa12Address');
+          } else {
+            store.updateContractType('fa2_ft');
+          }
+        }}
         checked />
       <label for="fungible-token" class="radio-label">Fungible Token</label>
       <input
@@ -146,7 +144,13 @@
         id="non-fungible-token"
         class="select-token-type"
         disabled={$store.tokenType}
-        on:click={() => (fa2tokenType = 'nonfungible')} />
+        on:click={() => {
+          if ($store.tokenType) {
+            store.updateContractType('fa12Address');
+          } else {
+            store.updateContractType('fa2_nft');
+          }
+        }} />
       <label for="non-fungible-token" class="radio-label">
         {#if $store.tokenType}
           <strike>Non Fungible Token</strike>
@@ -158,7 +162,7 @@
       <div class="slider-title">
         <div>Tokens</div>
         {#if !$store.tokenType}
-          {#if fa2tokenType === 'fungible'}
+          {#if $store.contractType === 'fa2_ft'}
             <div>{fungibleTokens}</div>
           {:else}
             <div>{nonFungibleTokens}</div>
@@ -170,7 +174,7 @@
       <div class="slider-container">
         {#if !$store.tokenType}
           <!-- FA2 token -->
-          {#if fa2tokenType === 'fungible'}
+          {#if $store.contractType === 'fa2_ft'}
             <input
               type="range"
               min="1"

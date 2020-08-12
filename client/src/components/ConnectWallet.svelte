@@ -32,8 +32,19 @@
           } else {
             store.updateUserBalance(0);
           }
-        } else {
-          // FA2 contract
+        } else if ($store.contractType === "fa2_ft") {
+          // FA2 contract with fungible tokens
+          const contract = await $store.Tezos.wallet.at(
+            config[$store.contractType][config.network]
+          );
+          const storage = await contract.storage();
+
+          const balance = await storage.assets.ledger.get($store.userAddress);
+          if (balance) {
+            store.updateUserBalance(balance.toNumber());
+          } else {
+            store.updateUserBalance(0);
+          }
         }
       } catch (error) {
         console.error(error);

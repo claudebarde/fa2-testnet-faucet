@@ -249,15 +249,11 @@
            { PUSH nat 0 ;
              SWAP ;
              ITER { SWAP ; PAIR ; DUP ; CDR ; CAR ; SWAP ; CAR ; ADD } } ;
+        ## Quick hack to allow everyone to mint tokens
          LAMBDA
            (pair (pair address bool) (option address))
            unit
-           { CAR ;
-             CAR ;
-             SENDER ;
-             COMPARE ;
-             NEQ ;
-             IF { PUSH string "NOT_AN_ADMIN" ; FAILWITH } { UNIT } } ;
+           { DROP ; UNIT } ;
          DIG 7 ;
          DUP ;
          DUG 8 ;

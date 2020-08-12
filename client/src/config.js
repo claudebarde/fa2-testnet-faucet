@@ -5,9 +5,9 @@ export default {
     sandbox: "http://localhost:8732",
     carthagenet: "https://carthagenet.smartpy.io"
   },
-  fa2Address: {
+  fa2_ft: {
     sandbox: "KT1TJjyHbm9dnERLg2RY7TFT3JTTp2jmYjrs",
-    carthagenet: "KT1PZFaUB1QhmnM9LpUixYpRKZ5GCQr64aFB"
+    carthagenet: "KT1EnN5VuPNQaz6K43Sv5Xiu3XyUWpVJNU7q"
   },
   fa12Address: {
     sandbox: "KT1EUMMqXA6oKKh5GggCEaZGkWr17bENPcaE",

@@ -21,7 +21,6 @@
   };
 
   const addRecipientAddress = event => {
-    console.log("input!");
     const address = event.target.value;
     if (isAddressValid(address)) {
       validAddress = true;
@@ -57,6 +56,29 @@
         }
       } else {
         // FA2
+        try {
+          // NFT doesn't work for now
+          if ($store.contractType === "fa2_nft")
+            throw new Error("NFT is coming soon!");
+          // sends transaction to contract
+          const op = await $store.fa2_instance.methods
+            .mint_tokens([
+              { owner: $store.recipientAddress, amount: fungibleTokens }
+            ])
+            .send();
+          console.log("Tx hash:", op.opHash);
+          await op.confirmation();
+          // when tx succeeds
+          store.updateUserBalance(
+            parseInt($store.userBalance) + parseInt(fungibleTokens)
+          );
+        } catch (error) {
+          console.error(error);
+        } finally {
+          loading = false;
+          success = true;
+          setTimeout(() => (success = false), 3000);
+        }
       }
     } else {
       // address is not valid
