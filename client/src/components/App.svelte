@@ -2,10 +2,10 @@
   import { onMount } from "svelte";
   import { fly } from "svelte/transition";
   import { Tezos } from "@taquito/taquito";
-  import { validateAddress } from "@taquito/utils";
   import config from "../config";
   import ConnectWallet from "./ConnectWallet.svelte";
   import UserAddress from "./UserAddress.svelte";
+  import TransferTokens from "./TransferTokens.svelte";
   import store from "../store";
 
   let contract, storage;
@@ -33,40 +33,19 @@
     }
   };
 
-  const isAddressValid = address => {
-    if (validateAddress(address) === 3) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const transferTokens = async () => {
-    if (isAddressValid(recipientAddress)) {
-      // address is valid
-      if ($store.tokenType) {
-        // FA1.2
-        // sends transaction to contract
-        try {
-          const op = await $store.fa12_instance.methods
-            .mint(fungibleTokens)
-            .send();
-          await op.confirmation();
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
-        // FA2
-      }
-    } else {
-      // address is not valid
-    }
-  };
-
   onMount(async () => {
     Tezos.setProvider({ rpc: config.rpc[config.network] });
     store.updateTezos(Tezos);
     console.log(process.env.NODE_ENV);
+    if ($store.tokenType) {
+      // creates instance for FA1.2 contract
+      const contract = await Tezos.wallet.at(
+        config.fa12Address[config.network]
+      );
+      store.updateFA12_instance(contract);
+    } else {
+      // creates instance for FA2 contract
+    }
   });
 </script>
 
@@ -92,19 +71,6 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-  }
-
-  .recipient-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .recipient-container__input {
-    text-align: left;
-    font-size: 0.7rem;
-    flex-grow: 2;
   }
 
   .slider-title {
@@ -163,8 +129,7 @@
       </div>
     </div>
     <br />
-    <UserAddress
-      on:user-is-recipient={event => (recipientAddress = event.detail)} />
+    <UserAddress />
     <br />
     <div class="radio-container">
       <input
@@ -239,17 +204,7 @@
     </div>
     <br />
     <div style="width:100%">
-      <div class="recipient-container">
-        <div class="recipient-container__input">
-          <input
-            type="text"
-            placeholder="Recipient's address"
-            bind:value={recipientAddress} />
-        </div>
-        <button on:click={transferTokens}>
-          <i class="icon far fa-thumbs-up" />
-        </button>
-      </div>
+      <TransferTokens {fungibleTokens} {nonFungibleTokens} />
     </div>
   </div>
   <br />

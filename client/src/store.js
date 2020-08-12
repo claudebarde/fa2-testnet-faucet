@@ -6,7 +6,8 @@ const initialState = {
   Tezos: undefined,
   fa12_instance: undefined,
   tokenType: true, // false for fa2, true for fa1.2
-  contractType: "fa12Address"
+  contractType: "fa12Address",
+  recipientAddress: ""
 };
 
 const store = writable(initialState);
@@ -30,6 +31,9 @@ const state = {
   },
   updateContractType: contractType => {
     store.update(store => ({ ...store, contractType }));
+  },
+  updateRecipientAddress: address => {
+    store.update(store => ({ ...store, recipientAddress: address }));
   }
 };
 

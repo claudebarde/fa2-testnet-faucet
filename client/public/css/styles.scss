@@ -136,14 +136,25 @@ button {
   cursor: pointer;
   font-size: 15px;
   color: #4a5568;
-}
-button:focus,
-button.active {
-  box-shadow: inset 6px 6px 12px #d2dae3, inset -6px -6px 12px #fcffff;
-}
-button:hover:not(:focus) .icon {
-  animation-name: buttonIcon;
-  animation-duration: 0.3s;
+
+  &:focus,
+  &.active {
+    box-shadow: inset 6px 6px 12px #d2dae3, inset -6px -6px 12px #fcffff;
+  }
+  &:hover:not(:focus) .icon {
+    animation-name: buttonIcon;
+    animation-duration: 0.3s;
+  }
+
+  .success {
+    color: #48bb78;
+  }
+  .warning {
+    color: #ed8936;
+  }
+  .disabled {
+    opacity: 0.5;
+  }
 }
 
 @keyframes buttonIcon {

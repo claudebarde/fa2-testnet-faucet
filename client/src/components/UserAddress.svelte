@@ -1,8 +1,5 @@
 <script>
-  import { createEventDispatcher } from "svelte";
   import store from "../store";
-
-  const dispatch = createEventDispatcher();
 </script>
 
 <style>
@@ -37,7 +34,7 @@
           <p
             class="subtitle"
             style="cursor:pointer"
-            on:click={dispatch('user-is-recipient', $store.userAddress)}>
+            on:click={() => store.updateRecipientAddress($store.userAddress)}>
             Address: {$store.userAddress.slice(0, 7) + '...' + $store.userAddress.slice(-7)}
           </p>
         </div>
@@ -45,7 +42,7 @@
           <p>Balance</p>
           {#if $store.userBalance !== undefined}
             <p class="subtitle">
-              {($store.userBalance / 1000000).toLocaleString('en-US')} tokens
+              {$store.userBalance.toLocaleString('en-US')} tokens
             </p>
           {:else}
             <p class="subtitle">---</p>
