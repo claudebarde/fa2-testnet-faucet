@@ -214,28 +214,28 @@
   <br />
   <div class="small-box second-box">
     <a
-      href="https://www.github.com"
+      href="https://github.com/claudebarde/fa2-testnet-faucet"
       class="github"
       target="_blank"
       rel="noopener noreferrer">
       <i class="fab fa-github" />
     </a>
     <a
-      href="https://www.github.com"
+      href={`https://better-call.dev/carthagenet/${$store.tokenType ? 'KT1Eapit2PHu8hspMJJDnGCK1LVnhbY43rKj' : 'KT1EnN5VuPNQaz6K43Sv5Xiu3XyUWpVJNU7q'}/operations`}
       class="contract"
       target="_blank"
       rel="noopener noreferrer">
       <i class="far fa-file-code" />
     </a>
     <a
-      href="https://www.twitter.com"
+      href="https://twitter.com/TezosTaquito"
       class="twitter"
       target="_blank"
       rel="noopener noreferrer">
       <i class="fab fa-twitter" />
     </a>
     <a
-      href="https://www.telegram.org"
+      href="https://t.me/tezostaquito"
       class="telegram"
       target="_blank"
       rel="noopener noreferrer">
