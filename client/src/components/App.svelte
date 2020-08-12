@@ -210,6 +210,12 @@
     <div style="width:100%">
       <TransferTokens {fungibleTokens} {nonFungibleTokens} />
     </div>
+    <div class="token-choice">
+      <input type="radio" name="token-choice" id="fa1-2" checked />
+      <input type="radio" name="token-choice" id="fa2" />
+      <input type="radio" name="token-choice" id="tezzies" />
+      <div class="ball" />
+    </div>
   </div>
   <br />
   <div class="small-box second-box">

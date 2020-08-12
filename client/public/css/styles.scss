@@ -316,3 +316,55 @@ input[type="range"] {
     background-color: $background-color;
   }
 }
+
+.token-choice {
+  width: 90px;
+  height: 14px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  border: solid 4px $background-color;
+  box-shadow: $box-shadow-inset;
+  border-radius: 50px;
+  padding: 10px;
+  margin: 10px;
+
+  input[type="radio"] {
+    width: 20px;
+    height: 15px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    border: solid 1px transparent;
+    border-radius: 50px;
+    outline: none;
+  }
+
+  .ball {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    transition: 0.3s;
+    height: 22px;
+    width: 22px;
+    border-radius: 50px;
+    transition: 0.3s;
+  }
+
+  input[type="radio"]:checked#fa1-2 ~ .ball {
+    background: radial-gradient(circle at 5px 5px, #81e6d9, #319795);
+    margin-left: 0px;
+  }
+
+  input[type="radio"]:checked#fa2 ~ .ball {
+    background: radial-gradient(circle at 5px 5px, #90cdf4, #3182ce);
+    margin-left: 37px;
+  }
+
+  input[type="radio"]:checked#tezzies ~ .ball {
+    background: radial-gradient(circle at 5px 5px, #d6bcfa, #805ad5);
+    margin-left: 69px;
+  }
+}
