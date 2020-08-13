@@ -1,6 +1,6 @@
 const { Tezos } = require("@taquito/taquito");
 const { InMemorySigner } = require("@taquito/signer");
-const { SECRET_KEY, LAST_TRANSFER } = process.env;
+const { SECRET_KEY } = process.env;
 
 exports.handler = async (event, context) => {
   // Only allow POST
@@ -13,10 +13,8 @@ exports.handler = async (event, context) => {
   try {
     if (req.amount > 100) throw "Invalid amount";
 
-    console.log("last transfer:", LAST_TRANSFER);
-
-    if (Date.now() < LAST_TRANSFER + 15 * 60 * 60 * 1000)
-      throw "New transfers become available after 15 minutes.";
+    /*if (Date.now() < LAST_TRANSFER + 15 * 60 * 60 * 1000)
+      throw "New transfers become available after 15 minutes.";*/
 
     // 15 minutes between each transfer
     Tezos.setProvider({
@@ -28,8 +26,6 @@ exports.handler = async (event, context) => {
       amount: req.amount
     });
     //await op.confirmation();
-
-    process.env.LAST_TRANSFER = Date.now();
 
     return {
       statusCode: 200,

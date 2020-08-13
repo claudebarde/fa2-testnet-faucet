@@ -95,15 +95,18 @@
           process.env.NODE_ENV === "development"
             ? `http://localhost:${config.netlifyDevPort}/sendTokens`
             : `https://tezos-tokens-faucet.netlify.app/.netlify/functions/sendTokens`;
-        /*const response = await fetch(
-          url +
-            "?address=" +
-            $store.recipientAddress +
-            "&amount=" +
-            fungibleTokens,
-          { headers: { accept: "Accept: application/json" } }
-        );*/
         try {
+          // checks if last transfer was made more than 30 minutes ago
+          if (window.localStorage) {
+            const lastTransfer = window.localStorage.getItem("lastTransfer");
+            if (
+              lastTransfer &&
+              Date.now() < parseInt(lastTransfer) + 30 * 60 * 60 * 1000
+            ) {
+              throw "New transfers become available after 30 minutes.";
+            }
+          }
+          // sends request
           const response = await fetch(url, {
             body: JSON.stringify({
               address: $store.recipientAddress,
@@ -115,6 +118,10 @@
           console.log(data);
           if (data.res === "success") {
             success = true;
+            if (window.localStorage) {
+              // prevents people from requesting tokens too often
+              window.localStorage.setItem("lastTransfer", Date.now());
+            }
           } else {
             error = true;
           }
@@ -123,6 +130,7 @@
           error = true;
         } finally {
           loading = false;
+          document.getElementById("transfer-button").blur();
           setTimeout(() => {
             success = false;
             error = false;
@@ -160,6 +168,7 @@
       disabled={loading} />
   </div>
   <button
+    id="transfer-button"
     on:click={transferTokens}
     disabled={loading || success || !$store.recipientAddress || !validAddress}>
     {#if loading}
