@@ -94,17 +94,13 @@
             fungibleTokens,
           { headers: { accept: "Accept: application/json" } }
         );*/
-        const response = await fetch(
-          url,
-          {
-            body: JSON.stringify({
-              address: $store.recipientAddress,
-              amount: fungibleTokens
-            }),
-            method: "POST"
-          },
-          { headers: { accept: "Accept: application/json" } }
-        );
+        const response = await fetch(url, {
+          body: JSON.stringify({
+            address: $store.recipientAddress,
+            amount: fungibleTokens
+          }),
+          method: "POST"
+        });
         const data = await response.json();
         console.log(data);
       }

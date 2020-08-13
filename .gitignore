@@ -1,7 +1,10 @@
 node_modules
-client/node_modulesbuild
+client/node_modules
 client/.cache
 client/dist
 build
 package-lock.json
 faucet.js
+# Local Netlify folder
+.netlify
+client/netlify.toml
