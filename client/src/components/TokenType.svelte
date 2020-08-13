@@ -2,21 +2,19 @@
   import store from "../store";
   import config from "../config";
 
-  const updateTokenType = async () => {
-    const tokenType = $store.tokenType;
-    store.updateTokenType(!tokenType);
-    store.updateContractType(tokenType ? "fa2_ft" : "fa12Address");
-    if ($store.tokenType) {
+  const updateTokenType = async type => {
+    store.updateTokenType(type);
+    if (type === "fa2_ft") {
       document.getElementById("fungible-token").click();
     }
     // updates token instances if necessary
-    if ($store.tokenType && !$store.fa12_instance) {
+    if (type === "fa12" && !$store.fa12_instance) {
       // FA1.2
       const contract = await $store.Tezos.wallet.at(
-        config.fa12Address[config.network]
+        config.fa12[config.network]
       );
       store.updateFA12_instance(contract);
-    } else if (!$store.tokenType && !$store.fa2_instance) {
+    } else if (type === "fa2_ft" && !$store.fa2_instance) {
       // FA2
       const contract = await $store.Tezos.wallet.at(
         config.fa2Address[config.network]
@@ -24,7 +22,7 @@
       store.updateFA2_instance(contract);
     }
     // updates user's token balance if connected
-    if ($store.tokenType && $store.userAddress) {
+    if (type === "fa12" && $store.userAddress) {
       // FA1.2
       const storage = await $store.fa12_instance.storage();
 
@@ -34,7 +32,7 @@
       } else {
         store.updateUserBalance(0);
       }
-    } else if (!$store.tokenType && $store.userAddress) {
+    } else if (type === "fa2_ft" && $store.userAddress) {
       // FA2
       const storage = await $store.fa2_instance.storage();
 
@@ -48,9 +46,31 @@
   };
 </script>
 
-<div class="token-type">
+<!--<div class="token-type">
   <input
     type="checkbox"
     checked={$store.tokenType}
     on:click={updateTokenType} />
+</div>-->
+
+<div class="token-choice">
+  <input
+    type="radio"
+    name="token-choice"
+    id="fa1-2"
+    checked={$store.tokenType === 'fa12'}
+    on:click={() => updateTokenType('fa12')} />
+  <input
+    type="radio"
+    name="token-choice"
+    id="fa2"
+    checked={$store.tokenType === 'fa2_ft' || $store.tokenType === 'fa2_nft'}
+    on:click={() => updateTokenType('fa2_ft')} />
+  <input
+    type="radio"
+    name="token-choice"
+    id="tezzies"
+    checked={$store.tokenType === 'tezzies'}
+    on:click={() => updateTokenType('tezzies')} />
+  <div class="ball" />
 </div>

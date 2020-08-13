@@ -6,8 +6,7 @@ const initialState = {
   Tezos: undefined,
   fa12_instance: undefined,
   fa2_instance: undefined,
-  tokenType: false, // false for fa2, true for fa1.2
-  contractType: "fa2_ft", // fa12Address || fa2_ft || fa2_nft
+  tokenType: "fa2_ft", // fa12 || fa2_ft || fa2_nft || tezzies
   recipientAddress: ""
 };
 
@@ -32,9 +31,6 @@ const state = {
   },
   updateFA2_instance: instance => {
     store.update(store => ({ ...store, fa2_instance: instance }));
-  },
-  updateContractType: contractType => {
-    store.update(store => ({ ...store, contractType }));
   },
   updateRecipientAddress: address => {
     store.update(store => ({ ...store, recipientAddress: address }));

@@ -9,8 +9,9 @@ export default {
     sandbox: "KT1TJjyHbm9dnERLg2RY7TFT3JTTp2jmYjrs",
     carthagenet: "KT1EnN5VuPNQaz6K43Sv5Xiu3XyUWpVJNU7q"
   },
-  fa12Address: {
+  fa12: {
     sandbox: "KT1EUMMqXA6oKKh5GggCEaZGkWr17bENPcaE",
     carthagenet: "KT1Eapit2PHu8hspMJJDnGCK1LVnhbY43rKj"
-  }
+  },
+  netlifyDevPort: "50903"
 };

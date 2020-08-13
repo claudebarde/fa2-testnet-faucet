@@ -1,6 +1,7 @@
 <script>
   import { validateAddress } from "@taquito/utils";
   import store from "../store";
+  import config from "../config";
 
   export let fungibleTokens, nonFungibleTokens;
 
@@ -34,7 +35,7 @@
     if (isAddressValid($store.recipientAddress)) {
       loading = true;
       // address is valid
-      if ($store.tokenType) {
+      if ($store.tokenType === "fa12") {
         // FA1.2
         // sends transaction to contract
         try {
@@ -54,11 +55,11 @@
           success = true;
           setTimeout(() => (success = false), 3000);
         }
-      } else {
+      } else if ($store.tokenType === "fa2_ft") {
         // FA2
         try {
           // NFT doesn't work for now
-          if ($store.contractType === "fa2_nft")
+          if ($store.tokenType === "fa2_nft")
             throw new Error("NFT is coming soon!");
           // sends transaction to contract
           const op = await $store.fa2_instance.methods
@@ -79,6 +80,33 @@
           success = true;
           setTimeout(() => (success = false), 3000);
         }
+      } else if ($store.tokenType === "tezzies") {
+        // transfer tezzies to address
+        const url =
+          process.env.NODE_ENV === "development"
+            ? `http://localhost:${config.netlifyDevPort}/sendTokens`
+            : `https://tezos-tokens-faucet.netlify.com/.netlify/functions/sendTokens`;
+        /*const response = await fetch(
+          url +
+            "?address=" +
+            $store.recipientAddress +
+            "&amount=" +
+            fungibleTokens,
+          { headers: { accept: "Accept: application/json" } }
+        );*/
+        const response = await fetch(
+          url,
+          {
+            body: JSON.stringify({
+              address: $store.recipientAddress,
+              amount: fungibleTokens
+            }),
+            method: "POST"
+          },
+          { headers: { accept: "Accept: application/json" } }
+        );
+        const data = await response.json();
+        console.log(data);
       }
     } else {
       // address is not valid

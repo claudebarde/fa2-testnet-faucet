@@ -17,10 +17,7 @@
   let recipientAddress = "";
 
   const changeAmountTokens = e => {
-    if (
-      $store.tokenType ||
-      (!$store.tokenType && $store.contractType === "fa2_ft")
-    ) {
+    if ($store.tokenType === "fa12" || $store.tokenType === "fa2_ft") {
       if (e.target.value > 0 && e.target.value <= 100) {
         increaseTokens = e.target.value > fungibleTokens;
         fungibleTokens = e.target.value;
@@ -37,11 +34,9 @@
     Tezos.setProvider({ rpc: config.rpc[config.network] });
     store.updateTezos(Tezos);
     console.log(process.env.NODE_ENV);
-    if ($store.tokenType) {
+    if ($store.tokenType === "fa12") {
       // creates instance for FA1.2 contract
-      const contract = await Tezos.wallet.at(
-        config.fa12Address[config.network]
-      );
+      const contract = await Tezos.wallet.at(config.fa12[config.network]);
       store.updateFA12_instance(contract);
     } else {
       // creates instance for FA2 contract
@@ -102,17 +97,23 @@
     <div class="title">
       <TokenType />
       <div>
-        {#if $store.tokenType}
+        {#if $store.tokenType === 'fa12'}
           <p
             in:fly={{ y: 30, duration: 200, delay: 200 }}
             out:fly={{ y: -30, duration: 200 }}>
             FA1.2 Token Faucet
           </p>
-        {:else}
+        {:else if $store.tokenType === 'fa2_ft' || $store.tokenType === 'fa2_nft'}
           <p
             out:fly={{ y: -30, duration: 200 }}
             in:fly={{ y: 30, duration: 200, delay: 200 }}>
             FA2 Token Faucet
+          </p>
+        {:else}
+          <p
+            out:fly={{ y: -30, duration: 200 }}
+            in:fly={{ y: 30, duration: 200, delay: 200 }}>
+            XTZ Faucet
           </p>
         {/if}
       </div>
@@ -130,10 +131,10 @@
         id="fungible-token"
         class="select-token-type"
         on:click={() => {
-          if ($store.tokenType) {
-            store.updateContractType('fa12Address');
+          if ($store.tokenType === 'fa12') {
+            store.updateTokenType('fa12');
           } else {
-            store.updateContractType('fa2_ft');
+            store.updateTokenType('fa2_ft');
           }
         }}
         checked />
@@ -143,16 +144,10 @@
         name="token-type"
         id="non-fungible-token"
         class="select-token-type"
-        disabled={$store.tokenType}
-        on:click={() => {
-          if ($store.tokenType) {
-            store.updateContractType('fa12Address');
-          } else {
-            store.updateContractType('fa2_nft');
-          }
-        }} />
+        disabled={$store.tokenType === 'fa12'}
+        on:click={() => store.updateTokenType('fa2_nft')} />
       <label for="non-fungible-token" class="radio-label">
-        {#if $store.tokenType}
+        {#if $store.tokenType === 'fa12' || $store.tokenType === 'tezzies'}
           <strike>Non Fungible Token</strike>
         {:else}Non Fungible Token{/if}
       </label>
@@ -161,45 +156,28 @@
     <div>
       <div class="slider-title">
         <div>Tokens</div>
-        {#if !$store.tokenType}
-          {#if $store.contractType === 'fa2_ft'}
-            <div>{fungibleTokens}</div>
-          {:else}
-            <div>{nonFungibleTokens}</div>
-          {/if}
-        {:else}
+        {#if $store.tokenType === 'fa2_ft' || $store.tokenType === 'fa12' || $store.tokenType === 'tezzies'}
           <div>{fungibleTokens}</div>
+        {:else}
+          <div>{nonFungibleTokens}</div>
         {/if}
       </div>
       <div class="slider-container">
-        {#if !$store.tokenType}
-          <!-- FA2 token -->
-          {#if $store.contractType === 'fa2_ft'}
-            <input
-              type="range"
-              min="1"
-              max="100"
-              value={fungibleTokens}
-              on:input={changeAmountTokens}
-              on:change={changeAmountTokens}
-              id="tokenSlider" />
-          {:else}
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={nonFungibleTokens}
-              on:input={changeAmountTokens}
-              on:change={changeAmountTokens}
-              id="tokenSlider" />
-          {/if}
-        {:else}
-          <!-- FA1.2 token -->
+        {#if $store.tokenType === 'fa2_ft' || $store.tokenType === 'fa12' || $store.tokenType === 'tezzies'}
           <input
             type="range"
             min="1"
             max="100"
             value={fungibleTokens}
+            on:input={changeAmountTokens}
+            on:change={changeAmountTokens}
+            id="tokenSlider" />
+        {:else}
+          <input
+            type="range"
+            min="1"
+            max="10"
+            value={nonFungibleTokens}
             on:input={changeAmountTokens}
             on:change={changeAmountTokens}
             id="tokenSlider" />
@@ -209,12 +187,6 @@
     <br />
     <div style="width:100%">
       <TransferTokens {fungibleTokens} {nonFungibleTokens} />
-    </div>
-    <div class="token-choice">
-      <input type="radio" name="token-choice" id="fa1-2" checked />
-      <input type="radio" name="token-choice" id="fa2" />
-      <input type="radio" name="token-choice" id="tezzies" />
-      <div class="ball" />
     </div>
   </div>
   <br />
@@ -227,7 +199,7 @@
       <i class="fab fa-github" />
     </a>
     <a
-      href={`https://better-call.dev/carthagenet/${$store.tokenType ? 'KT1Eapit2PHu8hspMJJDnGCK1LVnhbY43rKj' : 'KT1EnN5VuPNQaz6K43Sv5Xiu3XyUWpVJNU7q'}/operations`}
+      href={`https://better-call.dev/carthagenet/${$store.tokenType === 'fa12' ? 'KT1Eapit2PHu8hspMJJDnGCK1LVnhbY43rKj' : 'KT1EnN5VuPNQaz6K43Sv5Xiu3XyUWpVJNU7q'}/operations`}
       class="contract"
       target="_blank"
       rel="noopener noreferrer">

@@ -20,9 +20,9 @@
           store.updateUserAddress(await wallet.getPKH());
         }
         // gets user's token balance
-        if ($store.contractType === "fa12Address") {
+        if ($store.tokenType === "fa12") {
           const contract = await $store.Tezos.wallet.at(
-            config[$store.contractType][config.network]
+            config[$store.tokenType][config.network]
           );
           const storage = await contract.storage();
 
@@ -32,10 +32,10 @@
           } else {
             store.updateUserBalance(0);
           }
-        } else if ($store.contractType === "fa2_ft") {
+        } else if ($store.tokenType === "fa2_ft") {
           // FA2 contract with fungible tokens
           const contract = await $store.Tezos.wallet.at(
-            config[$store.contractType][config.network]
+            config[$store.tokenType][config.network]
           );
           const storage = await contract.storage();
 
