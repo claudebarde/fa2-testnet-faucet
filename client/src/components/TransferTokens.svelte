@@ -85,7 +85,7 @@
         const url =
           process.env.NODE_ENV === "development"
             ? `http://localhost:${config.netlifyDevPort}/sendTokens`
-            : `https://tezos-tokens-faucet.netlify.com/.netlify/functions/sendTokens`;
+            : `https://tezos-tokens-faucet.netlify.app/.netlify/functions/sendTokens`;
         /*const response = await fetch(
           url +
             "?address=" +

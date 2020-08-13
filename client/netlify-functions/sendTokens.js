@@ -14,6 +14,7 @@ exports.handler = async (event, context) => {
       "Access-Control-Allow-Origin": "*"
     },
     body: JSON.stringify({
+      lastTransfer: LAST_TRANSFER,
       res: `${req.amount} to be sent to ${req.address}`
     })
   };

@@ -13,5 +13,5 @@ export default {
     sandbox: "KT1EUMMqXA6oKKh5GggCEaZGkWr17bENPcaE",
     carthagenet: "KT1Eapit2PHu8hspMJJDnGCK1LVnhbY43rKj"
   },
-  netlifyDevPort: 63078
+  netlifyDevPort: 65460
 };
