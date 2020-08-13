@@ -7,6 +7,7 @@
 
   let loading = false;
   let success = false;
+  let error = false;
   let validAddress = false;
 
   $: if ($store.recipientAddress) {
@@ -50,10 +51,14 @@
           );
         } catch (error) {
           console.error(error);
+          error = true;
         } finally {
           loading = false;
           success = true;
-          setTimeout(() => (success = false), 3000);
+          setTimeout(() => {
+            success = false;
+            error = false;
+          }, 3000);
         }
       } else if ($store.tokenType === "fa2_ft") {
         // FA2
@@ -73,12 +78,16 @@
           store.updateUserBalance(
             parseInt($store.userBalance) + parseInt(fungibleTokens)
           );
-        } catch (error) {
-          console.error(error);
+          success = true;
+        } catch (err) {
+          console.error(err);
+          error = true;
         } finally {
           loading = false;
-          success = true;
-          setTimeout(() => (success = false), 3000);
+          setTimeout(() => {
+            success = false;
+            error = false;
+          }, 3000);
         }
       } else if ($store.tokenType === "tezzies") {
         // transfer tezzies to address
@@ -94,15 +103,31 @@
             fungibleTokens,
           { headers: { accept: "Accept: application/json" } }
         );*/
-        const response = await fetch(url, {
-          body: JSON.stringify({
-            address: $store.recipientAddress,
-            amount: fungibleTokens
-          }),
-          method: "POST"
-        });
-        const data = await response.json();
-        console.log(data);
+        try {
+          const response = await fetch(url, {
+            body: JSON.stringify({
+              address: $store.recipientAddress,
+              amount: fungibleTokens
+            }),
+            method: "POST"
+          });
+          const data = await response.json();
+          console.log(data);
+          if (data.res === "success") {
+            success = true;
+          } else {
+            error = true;
+          }
+        } catch (err) {
+          console.log(err);
+          error = true;
+        } finally {
+          loading = false;
+          setTimeout(() => {
+            success = false;
+            error = false;
+          }, 3000);
+        }
       }
     } else {
       // address is not valid
@@ -143,6 +168,7 @@
       <i
         class="icon far fa-thumbs-up fa-lg"
         class:success
+        class:error
         class:disabled={!validAddress} />
     {/if}
   </button>

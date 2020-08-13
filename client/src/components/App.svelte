@@ -17,7 +17,11 @@
   let recipientAddress = "";
 
   const changeAmountTokens = e => {
-    if ($store.tokenType === "fa12" || $store.tokenType === "fa2_ft") {
+    if (
+      $store.tokenType === "fa12" ||
+      $store.tokenType === "fa2_ft" ||
+      $store.tokenType === "tezzies"
+    ) {
       if (e.target.value > 0 && e.target.value <= 100) {
         increaseTokens = e.target.value > fungibleTokens;
         fungibleTokens = e.target.value;
