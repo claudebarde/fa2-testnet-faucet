@@ -1,5 +1,5 @@
-const { Tezos } = require("@taquito/taquito");
-const { alice, bob } = require("../scripts/sandbox/accounts");
+const { Tezos, BigMapAbstraction } = require("@taquito/taquito");
+const { alice, bob } = require("../../scripts/sandbox/accounts");
 const setup = require("./setup");
 
 contract("FA2 Fungible Token Contract - Transfers", () => {
@@ -232,5 +232,25 @@ contract("FA2 Fungible Token Contract - Transfers", () => {
 
     assert.exists(err);
     assert.equal(err, "FA2_NOT_OPERATOR");
+  });
+
+  it("should let Bob mint 1000 tokens", async () => {
+    const tokenAmount = 1000;
+    storage = await fa2_instance.storage();
+    const bobBalance = await storage.assets.ledger.get(bob.pkh);
+
+    try {
+      const op = await fa2_instance.methods
+        .mint_tokens([{ owner: bob.pkh, amount: tokenAmount }])
+        .send();
+      await op.confirmation();
+    } catch (error) {
+      console.log(error);
+    }
+
+    storage = await fa2_instance.storage();
+    const bobNewBalance = await storage.assets.ledger.get(bob.pkh);
+
+    assert.equal(bobNewBalance.toNumber(), bobBalance.toNumber() + tokenAmount);
   });
 });

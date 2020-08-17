@@ -1,6 +1,4 @@
-const { Tezos } = require("@taquito/taquito");
-const { InMemorySigner } = require("@taquito/signer");
-const { alice, bob } = require("../scripts/sandbox/accounts");
+const { alice, bob } = require("../../scripts/sandbox/accounts");
 const setup = require("./setup");
 
 contract("FA2 Fungible Token Contract - Operators", () => {

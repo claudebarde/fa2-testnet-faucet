@@ -126,7 +126,7 @@
             error = true;
           }
         } catch (err) {
-          console.log(err);
+          console.error(err);
           error = true;
         } finally {
           loading = false;

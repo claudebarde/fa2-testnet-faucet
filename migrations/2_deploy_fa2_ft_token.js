@@ -1,8 +1,8 @@
-const FA2token = artifacts.require("fa2_single_asset");
+const FA2_FT_token = artifacts.require("fa2_single_asset");
 const { MichelsonMap } = require("@taquito/taquito");
 const { alice } = require("../scripts/sandbox/accounts");
 
-const totalSupply = 10000;
+const totalSupply = 11111;
 
 const initialStorage = {
   admin: {
@@ -26,5 +26,5 @@ const initialStorage = {
 };
 
 module.exports = async (deployer, _network, accounts) => {
-  deployer.deploy(FA2token, initialStorage);
+  deployer.deploy(FA2_FT_token, initialStorage);
 };
