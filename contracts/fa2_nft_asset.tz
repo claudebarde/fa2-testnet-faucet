@@ -589,7 +589,7 @@
                  DUG 2 ;
                  MEM ;
                  NOT ;
-                 IF { DROP 2 ; PUSH string "INVALID_PARAM" ; FAILWITH }
+                 IF { DROP 2 ; PUSH string "INVALID_PARAM4" ; FAILWITH }
                     { DUP ;
                       CDR ;
                       DIG 2 ;
@@ -693,7 +693,7 @@
                  SUB ;
                  ISNAT ;
                  IF_NONE
-                   { PUSH string "INVALID_PARAM" ; FAILWITH }
+                   { PUSH string "INVALID_PARAM1" ; FAILWITH }
                    { SWAP ;
                      DUP ;
                      DUG 2 ;
@@ -703,7 +703,7 @@
                      SWAP ;
                      COMPARE ;
                      NEQ ;
-                     IF { PUSH string "INVALID_PARAM" ; FAILWITH } { UNIT } } ;
+                     IF { PUSH string "INVALID_PARAM2" ; FAILWITH } { UNIT } } ;
                  DROP ;
                  DUP ;
                  CDR ;
@@ -717,7 +717,7 @@
                  CAR ;
                  COMPARE ;
                  GT ;
-                 IF { DROP 2 ; PUSH string "INVALID_PARAM" ; FAILWITH }
+                 IF { DROP 2 ; PUSH string "INVALID_PARAM3" ; FAILWITH }
                     { DUP ;
                       CDR ;
                       CAR ;
