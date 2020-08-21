@@ -11,6 +11,10 @@ export default {
     carthagenet: "KT1C1eUuS7Y5FsaXryJse7vVM7CfFz6LAJaX"
     //carthagenet: "KT1EnN5VuPNQaz6K43Sv5Xiu3XyUWpVJNU7q"
   },
+  fa2_nft: {
+    sandbox: "KT1T7NASiPkJEEgGT8mBT1eFmXt6oS2wQG6z",
+    carthagenet: "KT1C1eUuS7Y5FsaXryJse7vVM7CfFz6LAJaX"
+  },
   fa12: {
     sandbox: "KT1DSJsJBFXQzNWpRMq3DtUnL5RYzQCFiMZs",
     carthagenet: "KT1WWkQHoxU6bfwK2Sa3wc4S7PyvGVfVfk3b"
