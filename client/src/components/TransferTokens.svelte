@@ -1,5 +1,6 @@
 <script>
   import { validateAddress } from "@taquito/utils";
+  import { MichelsonMap } from "@taquito/taquito";
   import store from "../store";
   import config from "../config";
 
@@ -61,13 +62,10 @@
           }, 3000);
         }
       } else if ($store.tokenType === "fa2_ft") {
-        // FA2
+        // FA2 FT
         try {
-          // NFT doesn't work for now
-          if ($store.tokenType === "fa2_nft")
-            throw new Error("NFT is coming soon!");
           // sends transaction to contract
-          const op = await $store.fa2_instance.methods
+          const op = await $store.fa2_ft_instance.methods
             .mint_tokens([
               { owner: $store.recipientAddress, amount: fungibleTokens }
             ])
@@ -79,6 +77,43 @@
             parseInt($store.userBalance) + parseInt(fungibleTokens)
           );
           success = true;
+        } catch (err) {
+          console.error(err);
+          error = true;
+        } finally {
+          loading = false;
+          setTimeout(() => {
+            success = false;
+            error = false;
+          }, 3000);
+        }
+      } else if ($store.tokenType === "fa2_nft") {
+        // FA2 NFT
+        try {
+          // token data
+          const from = $store.userAddress;
+          const symbol = "TQT";
+          const decimals = 0;
+          const extras = new MichelsonMap();
+
+          const operations = [];
+
+          for (let i = 0; i < nonFungibleTokens; i++) {
+            // creates unique ID and name
+            const tokenId = Date.now()
+              .toString()
+              .slice(-7);
+            const name = Math.random()
+              .toString(36)
+              .substr(2, 9);
+            // creates transaction
+            const op = await $store.fa2_nft_instance.methods
+              .mint_tokens(from, tokenId, symbol, name, decimals, extras)
+              .send();
+            operations.push(op.confirmation());
+          }
+
+          await Promise.all(operations);
         } catch (err) {
           console.error(err);
           error = true;

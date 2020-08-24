@@ -45,7 +45,7 @@
     } else {
       // creates instance for FA2 contract
       const contract = await Tezos.wallet.at(config.fa2_ft[config.network]);
-      store.updateFA2_instance(contract);
+      store.updateFA2_ft_instance(contract);
     }
   });
 </script>
@@ -139,7 +139,7 @@
             store.updateTokenType('fa12');
           } else {
             store.updateTokenType('fa2_ft');
-            const storage = await $store.fa2_instance.storage();
+            const storage = await $store.fa2_ft_instance.storage();
             const balance = await storage.assets.ledger.get($store.userAddress);
             if (balance) {
               store.updateUserBalance(balance.toNumber());
@@ -159,6 +159,10 @@
         on:click={async () => {
           store.updateTokenType('fa2_nft');
           store.updateUserBalance('Not available');
+          if (!$store.fa2_nft_instance) {
+            const contract = await Tezos.wallet.at(config.fa2_nft[config.network]);
+            store.updateFA2_nft_instance(contract);
+          }
         }} />
       <label for="non-fungible-token" class="radio-label">
         {#if $store.tokenType === 'fa12' || $store.tokenType === 'tezzies'}
@@ -213,7 +217,7 @@
       <i class="fab fa-github" />
     </a>
     <a
-      href={`https://better-call.dev/carthagenet/${$store.tokenType === 'fa12' ? 'KT1Eapit2PHu8hspMJJDnGCK1LVnhbY43rKj' : 'KT1EnN5VuPNQaz6K43Sv5Xiu3XyUWpVJNU7q'}/operations`}
+      href={`https://better-call.dev/carthagenet/${$store.tokenType === 'fa12' ? config.fa12.carthagenet : $store.tokenType === 'fa2_ft' ? config.fa2_ft.carthagenet : config.fa2_nft.carthagenet}/operations`}
       class="contract"
       target="_blank"
       rel="noopener noreferrer">

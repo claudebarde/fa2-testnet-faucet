@@ -5,7 +5,8 @@ const initialState = {
   userBalance: 0,
   Tezos: undefined,
   fa12_instance: undefined,
-  fa2_instance: undefined,
+  fa2_ft_instance: undefined,
+  fa2_nft_instance: undefined,
   tokenType: "fa2_ft", // fa12 || fa2_ft || fa2_nft || tezzies
   recipientAddress: ""
 };
@@ -29,8 +30,11 @@ const state = {
   updateFA12_instance: instance => {
     store.update(store => ({ ...store, fa12_instance: instance }));
   },
-  updateFA2_instance: instance => {
-    store.update(store => ({ ...store, fa2_instance: instance }));
+  updateFA2_ft_instance: instance => {
+    store.update(store => ({ ...store, fa2_ft_instance: instance }));
+  },
+  updateFA2_nft_instance: instance => {
+    store.update(store => ({ ...store, fa2_nft_instance: instance }));
   },
   updateRecipientAddress: address => {
     store.update(store => ({ ...store, recipientAddress: address }));

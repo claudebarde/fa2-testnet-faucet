@@ -14,12 +14,12 @@
         config.fa12[config.network]
       );
       store.updateFA12_instance(contract);
-    } else if (type === "fa2_ft" && !$store.fa2_instance) {
+    } else if (type === "fa2_ft" && !$store.fa2_ft_instance) {
       // FA2
       const contract = await $store.Tezos.wallet.at(
         config.fa2Address[config.network]
       );
-      store.updateFA2_instance(contract);
+      store.updateFA2_ft_instance(contract);
     }
     // updates user's token balance if connected
     if (type === "fa12" && $store.userAddress) {
@@ -34,7 +34,7 @@
       }
     } else if (type === "fa2_ft" && $store.userAddress) {
       // FA2
-      const storage = await $store.fa2_instance.storage();
+      const storage = await $store.fa2_ft_instance.storage();
 
       const balance = await storage.assets.ledger.get($store.userAddress);
       if (balance) {
