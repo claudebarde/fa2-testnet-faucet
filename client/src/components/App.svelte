@@ -134,11 +134,18 @@
         name="token-type"
         id="fungible-token"
         class="select-token-type"
-        on:click={() => {
+        on:click={async () => {
           if ($store.tokenType === 'fa12') {
             store.updateTokenType('fa12');
           } else {
             store.updateTokenType('fa2_ft');
+            const storage = await $store.fa2_instance.storage();
+            const balance = await storage.assets.ledger.get($store.userAddress);
+            if (balance) {
+              store.updateUserBalance(balance.toNumber());
+            } else {
+              store.updateUserBalance(0);
+            }
           }
         }}
         checked />
@@ -149,7 +156,10 @@
         id="non-fungible-token"
         class="select-token-type"
         disabled={$store.tokenType === 'fa12'}
-        on:click={() => store.updateTokenType('fa2_nft')} />
+        on:click={async () => {
+          store.updateTokenType('fa2_nft');
+          store.updateUserBalance('Not available');
+        }} />
       <label for="non-fungible-token" class="radio-label">
         {#if $store.tokenType === 'fa12' || $store.tokenType === 'tezzies'}
           <strike>Non Fungible Token</strike>

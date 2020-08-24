@@ -38,11 +38,12 @@
             Address: {$store.userAddress.slice(0, 7) + '...' + $store.userAddress.slice(-7)}
           </p>
         </div>
-        <div>
+        <div style="text-align:right">
           <p>Balance</p>
           {#if $store.userBalance !== undefined}
             <p class="subtitle">
-              {$store.userBalance.toLocaleString('en-US')} tokens
+              {$store.userBalance.toLocaleString('en-US')}
+              {#if $store.userBalance !== 'Not available'}tokens{/if}
             </p>
           {:else}
             <p class="subtitle">---</p>

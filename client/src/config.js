@@ -12,12 +12,12 @@ export default {
     //carthagenet: "KT1EnN5VuPNQaz6K43Sv5Xiu3XyUWpVJNU7q"
   },
   fa2_nft: {
-    sandbox: "KT1T7NASiPkJEEgGT8mBT1eFmXt6oS2wQG6z",
-    carthagenet: "KT1C1eUuS7Y5FsaXryJse7vVM7CfFz6LAJaX"
+    sandbox: "KT1Th28wAZF2e6Q3gjbdr3Dgk4fM7CzRhDnQ",
+    carthagenet: "KT19eduexqqLL9ge8rKGEMp7Dk45L9GguSue"
   },
   fa12: {
     sandbox: "KT1DSJsJBFXQzNWpRMq3DtUnL5RYzQCFiMZs",
     carthagenet: "KT1WWkQHoxU6bfwK2Sa3wc4S7PyvGVfVfk3b"
   },
-  netlifyDevPort: 64636
+  netlifyDevPort: 61645
 };

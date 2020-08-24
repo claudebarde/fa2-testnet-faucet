@@ -42,16 +42,12 @@
       } else {
         store.updateUserBalance(0);
       }
+    } else if (type === "tezzies" && $store.userAddress) {
+      const balance = await $store.Tezos.tz.getBalance($store.userAddress);
+      store.updateUserBalance(balance.toNumber() / 1000000);
     }
   };
 </script>
-
-<!--<div class="token-type">
-  <input
-    type="checkbox"
-    checked={$store.tokenType}
-    on:click={updateTokenType} />
-</div>-->
 
 <div class="token-choice">
   <input
