@@ -17,5 +17,6 @@ export default {
     sandbox: "KT1DSJsJBFXQzNWpRMq3DtUnL5RYzQCFiMZs",
     carthagenet: "KT1WWkQHoxU6bfwK2Sa3wc4S7PyvGVfVfk3b"
   },
-  netlifyDevPort: 61645
+  netlifyDevPort: 61645,
+  ledgerID: 14926
 };

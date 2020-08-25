@@ -158,7 +158,14 @@
         disabled={$store.tokenType === 'fa12'}
         on:click={async () => {
           store.updateTokenType('fa2_nft');
-          store.updateUserBalance('Not available');
+          const ledgerJson = await fetch(`https://api.better-call.dev/v1//bigmap/carthagenet/${config.ledgerID}/keys`);
+          const ledger = await ledgerJson.json();
+          if (ledger) {
+            const balance = ledger.filter(token => token.data.value.value === $store.userAddress).length;
+            store.updateUserBalance(balance);
+          } else {
+            store.updateUserBalance('Not available');
+          }
           if (!$store.fa2_nft_instance) {
             const contract = await Tezos.wallet.at(config.fa2_nft[config.network]);
             store.updateFA2_nft_instance(contract);
@@ -236,6 +243,13 @@
       target="_blank"
       rel="noopener noreferrer">
       <i class="fab fa-telegram-plane" />
+    </a>
+    <a
+      href="https://better-call.dev/"
+      class="bcd"
+      target="_blank"
+      rel="noopener noreferrer">
+      <span>BCD</span>
     </a>
   </div>
 </main>

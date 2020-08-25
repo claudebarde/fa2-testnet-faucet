@@ -245,6 +245,20 @@ button {
     color: #27a8e7;
   }
 
+  a.bcd {
+    font-size: 0.5rem;
+    font-weight: bold;
+    color: #5b9429;
+
+    span {
+      display: block;
+      border: solid 1px black;
+      padding: 5px 0px;
+      border-radius: 3px;
+      background-color: black;
+    }
+  }
+
   a:hover {
     box-shadow: $box-shadow-inset;
   }

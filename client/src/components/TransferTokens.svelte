@@ -118,6 +118,11 @@
 
           const batchOp = await batch.send();
           await batchOp.confirmation();
+          if (isNaN($store.userBalance)) {
+            store.updateUserBalance(nonFungibleTokens);
+          } else {
+            store.updateUserBalance(+$store.userBalance + +nonFungibleTokens);
+          }
           success = true;
         } catch (err) {
           console.error(err);
