@@ -96,24 +96,29 @@
           const decimals = 0;
           const extras = new MichelsonMap();
 
-          const operations = [];
-
+          let batch = $store.Tezos.batch();
           for (let i = 0; i < nonFungibleTokens; i++) {
             // creates unique ID and name
-            const tokenId = Date.now()
-              .toString()
-              .slice(-7);
+            const tokenId = Math.round(Date.now() * Math.random());
             const name = Math.random()
               .toString(36)
               .substr(2, 9);
             // creates transaction
-            const op = await $store.fa2_nft_instance.methods
-              .mint_tokens(from, tokenId, symbol, name, decimals, extras)
-              .send();
-            operations.push(op.confirmation());
+            batch = batch.withContractCall(
+              $store.fa2_nft_instance.methods.mint_tokens(
+                from,
+                tokenId,
+                symbol,
+                name,
+                decimals,
+                extras
+              )
+            );
           }
 
-          await Promise.all(operations);
+          const batchOp = await batch.send();
+          await batchOp.confirmation();
+          success = true;
         } catch (err) {
           console.error(err);
           error = true;

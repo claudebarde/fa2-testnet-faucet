@@ -1,6 +1,7 @@
 <script>
   import store from "../store";
   import { TezBridgeWallet } from "@taquito/tezbridge-wallet";
+  import { TezBridgeSigner } from "@taquito/tezbridge-signer";
   import { ThanosWallet } from "@thanos-wallet/dapp";
   import config from "../config";
 
@@ -17,6 +18,7 @@
         } else {
           const wallet = new TezBridgeWallet();
           $store.Tezos.setWalletProvider(wallet);
+          $store.Tezos.setSignerProvider(new TezBridgeSigner());
           store.updateUserAddress(await wallet.getPKH());
         }
         // gets user's token balance

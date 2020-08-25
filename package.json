@@ -3,7 +3,8 @@
   "version": "2.0.0",
   "description": "Test Suite for Tezos Tokens",
   "dependencies": {
-    "@taquito/taquito": "^6.3.5-beta.0"
+    "@taquito/taquito": "^6.3.5-beta.0",
+    "@taquito/tezbridge-signer": "^6.3.5-beta.0"
   },
   "devDependencies": {
     "ganache-cli": "^6.10.0-tezos.1"
