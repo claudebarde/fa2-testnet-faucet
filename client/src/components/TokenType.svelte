@@ -4,6 +4,7 @@
 
   const updateTokenType = async type => {
     store.updateTokenType(type);
+    store.updateUserBalance("--");
     if (type === "fa2_ft") {
       document.getElementById("fungible-token").click();
     }

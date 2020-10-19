@@ -135,6 +135,7 @@
         id="fungible-token"
         class="select-token-type"
         on:click={async () => {
+          store.updateUserBalance('--');
           if ($store.tokenType === 'fa12') {
             store.updateTokenType('fa12');
           } else {
@@ -157,6 +158,7 @@
         class="select-token-type"
         disabled={$store.tokenType === 'fa12'}
         on:click={async () => {
+          store.updateUserBalance('--');
           store.updateTokenType('fa2_nft');
           const ledgerJson = await fetch(`https://api.better-call.dev/v1//bigmap/carthagenet/${config.ledgerID}/keys`);
           const ledger = await ledgerJson.json();
