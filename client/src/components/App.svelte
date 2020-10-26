@@ -186,11 +186,7 @@
         {#if $store.tokenType === 'fa2_ft' || $store.tokenType === 'fa12' || $store.tokenType === 'tezzies'}
           <div>{fungibleTokens}</div>
         {:else}
-          <div>
-            {#if +nonFungibleTokens === 1}
-              <span>{nonFungibleTokens}</span>
-            {:else}<span style="opacity:0.3">{nonFungibleTokens}</span>{/if}
-          </div>
+          <div><span>{nonFungibleTokens}</span></div>
         {/if}
       </div>
       <div class="slider-container">
