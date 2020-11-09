@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { fly } from "svelte/transition";
-  import { Tezos } from "@taquito/taquito";
+  import { TezosToolkit } from "@taquito/taquito";
   import config from "../config";
   import ConnectWallet from "./ConnectWallet.svelte";
   import UserAddress from "./UserAddress.svelte";
@@ -9,7 +9,7 @@
   import TokenType from "./TokenType.svelte";
   import store from "../store";
 
-  let contract, storage;
+  let contract, storage, Tezos;
 
   let fungibleTokens = 50;
   let nonFungibleTokens = 1;
@@ -35,7 +35,8 @@
   };
 
   onMount(async () => {
-    Tezos.setProvider({ rpc: config.rpc[config.network] });
+    Tezos = new TezosToolkit(config.rpc[config.network]);
+    //Tezos.setProvider({ rpc: config.rpc[config.network] });
     store.updateTezos(Tezos);
     console.log(process.env.NODE_ENV);
     if ($store.tokenType === "fa12") {
