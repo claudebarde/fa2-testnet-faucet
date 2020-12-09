@@ -11,7 +11,7 @@
         // checks if Thanos is installed
         if (await ThanosWallet.isAvailable()) {
           const wallet = new ThanosWallet("Tezos Token Faucet");
-          await wallet.connect(config.network);
+          await wallet.connect(config.network, { forcePermission: true });
           $store.Tezos.setWalletProvider(wallet);
           store.updateUserAddress(wallet.pkh);
         } else {
