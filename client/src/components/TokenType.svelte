@@ -12,13 +12,13 @@
     if (type === "fa12" && !$store.fa12_instance) {
       // FA1.2
       const contract = await $store.Tezos.wallet.at(
-        config.fa12[config.network]
+        config.fa12[$store.network]
       );
       store.updateFA12_instance(contract);
     } else if (type === "fa2_ft" && !$store.fa2_ft_instance) {
       // FA2
       const contract = await $store.Tezos.wallet.at(
-        config.fa2Address[config.network]
+        config.fa2Address[$store.network]
       );
       store.updateFA2_ft_instance(contract);
     }

@@ -1,14 +1,13 @@
 import { writable } from "svelte/store";
+import config from "./config";
 
 const initialState = {
   userAddress: undefined,
   userBalance: 0,
   Tezos: undefined,
-  fa12_instance: undefined,
-  fa2_ft_instance: undefined,
-  fa2_nft_instance: undefined,
   tokenType: "fa2_ft", // fa12 || fa2_ft || fa2_nft || tezzies
-  recipientAddress: ""
+  recipientAddress: "",
+  network: config.network
 };
 
 const store = writable(initialState);
@@ -27,17 +26,11 @@ const state = {
   updateTokenType: tokenType => {
     store.update(store => ({ ...store, tokenType }));
   },
-  updateFA12_instance: instance => {
-    store.update(store => ({ ...store, fa12_instance: instance }));
-  },
-  updateFA2_ft_instance: instance => {
-    store.update(store => ({ ...store, fa2_ft_instance: instance }));
-  },
-  updateFA2_nft_instance: instance => {
-    store.update(store => ({ ...store, fa2_nft_instance: instance }));
-  },
   updateRecipientAddress: address => {
     store.update(store => ({ ...store, recipientAddress: address }));
+  },
+  updateNetwork: network => {
+    store.update(store => ({ ...store, network }));
   }
 };
 

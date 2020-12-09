@@ -11,7 +11,7 @@
         // checks if Thanos is installed
         if (await ThanosWallet.isAvailable()) {
           const wallet = new ThanosWallet("Tezos Token Faucet");
-          await wallet.connect(config.network, { forcePermission: true });
+          await wallet.connect($store.network, { forcePermission: true });
           $store.Tezos.setWalletProvider(wallet);
           store.updateUserAddress(wallet.pkh);
         } else {
@@ -22,7 +22,7 @@
         // gets user's token balance
         if ($store.tokenType === "fa12") {
           const contract = await $store.Tezos.wallet.at(
-            config[$store.tokenType][config.network]
+            config[$store.tokenType][$store.network]
           );
           const storage = await contract.storage();
 
@@ -35,7 +35,7 @@
         } else if ($store.tokenType === "fa2_ft") {
           // FA2 contract with fungible tokens
           const contract = await $store.Tezos.wallet.at(
-            config[$store.tokenType][config.network]
+            config[$store.tokenType][$store.network]
           );
           const storage = await contract.storage();
 

@@ -13,14 +13,21 @@ module.exports = {
       type: "tezos"
     },
     carthagenet: {
-      host: "https://carthagenet.smartpy.io",
+      host: "https://carthagenet-tezos.giganode.io",
+      port: 443,
+      network_id: "*",
+      type: "tezos",
+      secretKey: faucet.sk
+    },
+    delphinet: {
+      host: "https://delphinet-tezos.giganode.io",
       port: 443,
       network_id: "*",
       type: "tezos",
       secretKey: faucet.sk
     },
     mainnet: {
-      host: "https://mainnet.smartpy.io",
+      host: "https://mainnet-tezos.giganode.io",
       port: 443,
       network_id: "*",
       type: "tezos"

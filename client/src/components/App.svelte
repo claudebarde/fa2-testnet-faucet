@@ -35,19 +35,9 @@
   };
 
   onMount(async () => {
-    Tezos = new TezosToolkit(config.rpc[config.network]);
-    //Tezos.setProvider({ rpc: config.rpc[config.network] });
+    Tezos = new TezosToolkit(config.rpc[$store.network]);
+    //Tezos.setProvider({ rpc: config.rpc[$store.network] });
     store.updateTezos(Tezos);
-    console.log(process.env.NODE_ENV);
-    if ($store.tokenType === "fa12") {
-      // creates instance for FA1.2 contract
-      const contract = await Tezos.wallet.at(config.fa12[config.network]);
-      store.updateFA12_instance(contract);
-    } else {
-      // creates instance for FA2 contract
-      const contract = await Tezos.wallet.at(config.fa2_ft[config.network]);
-      store.updateFA2_ft_instance(contract);
-    }
   });
 </script>
 
@@ -127,6 +117,29 @@
       </div>
     </div>
     <br />
+    <div class="radio-container">
+      <input
+        type="radio"
+        id="carthagenet"
+        checked={$store.network === 'carthagenet'}
+        on:click={() => {
+          store.updateNetwork('carthagenet');
+          $store.Tezos.setRpcProvider('https://carthagenet-tezos.giganode.io');
+          store.updateUserAddress('');
+          store.updateRecipientAddress('');
+        }} /><label for="carthagenet" class="radio-label">Carthagenet</label>
+      <input
+        type="radio"
+        id="delphinet"
+        checked={$store.network === 'delphinet'}
+        on:click={() => {
+          store.updateNetwork('delphinet');
+          $store.Tezos.setRpcProvider('https://delphinet-tezos.giganode.io');
+          store.updateUserAddress('');
+          store.updateRecipientAddress('');
+        }} /><label for="delphinet" class="radio-label">Delphinet</label>
+    </div>
+    <br />
     <UserAddress />
     <br />
     <div class="radio-container">
@@ -134,7 +147,6 @@
         type="radio"
         name="token-type"
         id="fungible-token"
-        class="select-token-type"
         on:click={async () => {
           store.updateUserBalance('--');
           if ($store.tokenType === 'fa12') {
@@ -156,7 +168,6 @@
         type="radio"
         name="token-type"
         id="non-fungible-token"
-        class="select-token-type"
         disabled={$store.tokenType === 'fa12'}
         on:click={async () => {
           store.updateUserBalance('--');
@@ -170,7 +181,7 @@
             store.updateUserBalance('Not available');
           }
           if (!$store.fa2_nft_instance) {
-            const contract = await Tezos.wallet.at(config.fa2_nft[config.network]);
+            const contract = await Tezos.wallet.at(config.fa2_nft[$store.network]);
             store.updateFA2_nft_instance(contract);
           }
         }} />

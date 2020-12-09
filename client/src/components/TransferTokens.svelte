@@ -41,7 +41,10 @@
         // FA1.2
         // sends transaction to contract
         try {
-          const op = await $store.fa12_instance.methods
+          const contract = await $store.Tezos.wallet.at(
+            config.fa12[$store.network]
+          );
+          const op = await contract.methods
             .mint($store.recipientAddress, fungibleTokens)
             .send();
           console.log("Tx hash:", op.opHash);
@@ -65,7 +68,10 @@
         // FA2 FT
         try {
           // sends transaction to contract
-          const op = await $store.fa2_ft_instance.methods
+          const contract = await $store.Tezos.wallet.at(
+            config.fa2_ft[$store.network]
+          );
+          const op = await contract.methods
             .mint_tokens([
               { owner: $store.recipientAddress, amount: fungibleTokens }
             ])
@@ -96,6 +102,9 @@
           const decimals = 0;
           const extras = new MichelsonMap();
 
+          const contract = await $store.Tezos.wallet.at(
+            config.fa2_ft[$store.network]
+          );
           let batch = $store.Tezos.wallet.batch([]);
           for (let i = 0; i < nonFungibleTokens; i++) {
             // creates unique ID and name
@@ -103,7 +112,7 @@
             const name = Math.random().toString(36).substr(2, 9);
             // creates transaction
             batch = batch.withContractCall(
-              $store.fa2_nft_instance.methods.mint_tokens(
+              contract.methods.mint_tokens(
                 from,
                 tokenId,
                 symbol,
