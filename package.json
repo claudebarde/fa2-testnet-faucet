@@ -3,14 +3,15 @@
   "version": "2.0.0",
   "description": "Test Suite for Tezos Tokens",
   "dependencies": {
-    "@taquito/taquito": "^6.3.5-beta.0"
+    "@taquito/taquito": "^8.0.1-beta.1"
   },
   "devDependencies": {
     "ganache-cli": "^6.10.0-tezos.1"
   },
   "scripts": {
     "start-sandbox": "ganache-cli --flavor tezos --seed alice",
-    "test": "docker pull ligolang/ligo:next && truffle test"
+    "test": "docker pull ligolang/ligo:next && truffle test",
+    "update-taquito": "ncu -u --target newest --filter '/^@taquito.*$/' && npm i && git add . && git commit -m \"Updated Taquito version\" && git push"
   },
   "repository": {
     "type": "git",
